@@ -1,5 +1,5 @@
 # Ignore game DLLs
-*
+GameDlls/*.dll
 
 # But not this file
 !.gitignore
