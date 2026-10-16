@@ -50,7 +50,7 @@ namespace PhinixServer
                 authType: Config.AuthType
             );
             UserManager = new ServerUserManager(Connections, Authenticator, Config.MaxDisplayNameLength);
-            Chat = new ServerChat(Connections, Authenticator, UserManager, Config.ChatHistoryLength);
+            Chat = new ServerChat(Connections, Authenticator, UserManager, Config.ChatHistoryLength, Config.ChatRateLimitMessages, Config.ChatRateLimitSeconds);
             Trading = new ServerTrading(Connections, Authenticator, UserManager);
 
             // Add handler for ILoggable modules
