@@ -2,6 +2,7 @@ syntax = "proto3";
 package Trading;
 
 import "Packets/Quality.proto";
+import "Packets/ProtoAnimal.proto";
 
 message ProtoThing
 {
@@ -16,4 +17,7 @@ message ProtoThing
     int32 HitPoints = 5;
 
     ProtoThing InnerProtoThing = 6;
+
+    // Set when this thing is a tame animal, empty otherwise
+    ProtoAnimal Animal = 7;
 };
