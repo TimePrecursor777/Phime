@@ -117,6 +117,18 @@ namespace PhinixServer
         public int ChatHistoryLength = 40;
 
         /// <summary>
+        /// Maximum number of chat messages a user can send within <see cref="ChatRateLimitSeconds"/> before further messages are refused.
+        /// </summary>
+        [DataMember(Name = "ChatRateLimitMessages", Order = 16)]
+        public int ChatRateLimitMessages = 5;
+
+        /// <summary>
+        /// Length in seconds of the window used by <see cref="ChatRateLimitMessages"/>.
+        /// </summary>
+        [DataMember(Name = "ChatRateLimitSeconds", Order = 17)]
+        public int ChatRateLimitSeconds = 10;
+
+        /// <summary>
         /// Loads a <see cref="Config"/> object from the given file path. Will return a default <see cref="Config"/> if the file does not exist.
         /// </summary>
         /// <param name="filePath">Config file path</param>
@@ -184,6 +196,8 @@ namespace PhinixServer
             // Ignore AuthType since it always has a value
             if (MaxDisplayNameLength < 1) MaxDisplayNameLength = 100;
             if (ChatHistoryLength < 0) ChatHistoryLength = 40;
+            if (ChatRateLimitMessages < 1) ChatRateLimitMessages = 5;
+            if (ChatRateLimitSeconds < 1) ChatRateLimitSeconds = 10;
         }
 
         /// <summary>

@@ -47,18 +47,26 @@ namespace Chat
         private int messageHistoryCapacity;
 
         /// <summary>
+        /// Limits how many chat messages each user can send in a short period, to stop spam.
+        /// </summary>
+        private RateLimiter messageRateLimiter;
+
+        /// <summary>
         /// Initialises a new <see cref="ServerChat"/> instance.
         /// </summary>
         /// <param name="netServer"></param>
         /// <param name="authenticator"></param>
         /// <param name="userManager"></param>
         /// <param name="messageHistoryCapacity"></param>
-        public ServerChat(NetServer netServer, ServerAuthenticator authenticator, ServerUserManager userManager, int messageHistoryCapacity)
+        /// <param name="rateLimitMessages">Maximum messages a user can send within <paramref name="rateLimitSeconds"/></param>
+        /// <param name="rateLimitSeconds">Length of the rate limit window in seconds</param>
+        public ServerChat(NetServer netServer, ServerAuthenticator authenticator, ServerUserManager userManager, int messageHistoryCapacity, int rateLimitMessages = 5, int rateLimitSeconds = 10)
         {
             this.netServer = netServer;
             this.authenticator = authenticator;
             this.userManager = userManager;
             this.messageHistoryCapacity = messageHistoryCapacity;
+            this.messageRateLimiter = new RateLimiter(rateLimitMessages, TimeSpan.FromSeconds(rateLimitSeconds));
 
             this.messageHistory = new List<ChatMessage>();
 
@@ -228,6 +236,18 @@ namespace Chat
             // Refuse packets from non-logged in users
             if (!userManager.IsLoggedIn(connectionId, packet.Uuid))
             {
+                sendFailedChatMessageResponse(connectionId, packet.MessageId);
+
+                // Stop here
+                return;
+            }
+
+            // Refuse messages from users sending too many too quickly
+            // The client shows a refused message as failed, so the sender knows it didn't go through
+            if (!messageRateLimiter.TryAct(packet.Uuid))
+            {
+                RaiseLogEntry(new LogEventArgs(string.Format("Rate limited a chat message from {0}", packet.Uuid.Highlight(HighlightType.UUID)), LogLevel.DEBUG));
+
                 sendFailedChatMessageResponse(connectionId, packet.MessageId);
 
                 // Stop here
