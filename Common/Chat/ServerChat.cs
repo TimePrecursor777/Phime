@@ -406,7 +406,9 @@ namespace Chat
         /// <param name="originalMessageId">The original message ID</param>
         private void sendFailedChatMessageResponse(string connectionId, string originalMessageId)
         {
-            sendChatMessageResponse(connectionId, false, originalMessageId, "", "");
+            // Echo the original ID back as the "new" ID, since clients replace a message's ID with this even on failure
+            // Sending an empty ID would give every refused message the same ID and make them draw on top of each other
+            sendChatMessageResponse(connectionId, false, originalMessageId, originalMessageId, "");
         }
     }
 }
