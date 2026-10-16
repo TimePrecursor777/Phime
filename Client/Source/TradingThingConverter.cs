@@ -60,6 +60,13 @@ namespace PhinixClient
                 protoThing.InnerProtoThing = ConvertThingFromVerse(minifiedVerseThing.InnerThing);
             }
 
+            // Check if verseThing is an animal
+            if (AnimalConverter.IsAnimal(verseThing))
+            {
+                // Attach the animal's details (name, age, training, health)
+                protoThing.Animal = AnimalConverter.ConvertAnimalFromVerse((Pawn) verseThing);
+            }
+
             // Return constructed protoThing
             return protoThing;
         }
@@ -74,6 +81,12 @@ namespace PhinixClient
         /// <exception cref="InvalidOperationException">Could not find a single def that matches Trading.Thing stuff def name</exception>
         public static Verse.Thing ConvertThingFromProto(Trading.ProtoThing protoThing)
         {
+            // Animals are rebuilt from their own details rather than made like an item
+            if (protoThing.Animal != null)
+            {
+                return AnimalConverter.ConvertAnimalFromProto(protoThing.Animal);
+            }
+
             // Try to get the ThingDef for protoThing
             ThingDef thingDef;
             try
