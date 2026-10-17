@@ -78,6 +78,10 @@ namespace PhinixClient
             absorbInputAroundWindow = true;
             closeOnClickedOutside = false;
 
+            // Enter shouldn't close the window, since people press it while typing in the boxes.
+            // Escape or the X still close it, and the Post button sends it
+            closeOnAccept = false;
+
             if (allItemDefs == null)
             {
                 // Items you can carry and trade. Corpses, unfinished items, and things like minified buildings are left out
