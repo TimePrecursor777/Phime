@@ -399,44 +399,49 @@ namespace PhinixClient
             // Check if there is a token we can process
             if (!string.IsNullOrEmpty(args.Token))
             {
-                lock (pendingItemStacksLock)
+                // Destroying or respawning things must happen on the main game thread, and this event fires on
+                // the network thread, so hand the work over
+                Client.Instance.RunOnMainThread(() =>
                 {
-                    // Check if there are pending item stacks for this token
-                    if (pendingItemStacks.ContainsKey(args.Token))
+                    lock (pendingItemStacksLock)
                     {
-                        if (args.Success)
+                        // Check if there are pending item stacks for this token
+                        if (pendingItemStacks.ContainsKey(args.Token))
                         {
-                            // Destroy and remove the pending items, they have been received by the server
-                            foreach (Thing thing in pendingItemStacks[args.Token].Things)
+                            if (args.Success)
                             {
-                                if (thing is Pawn pawn)
+                                // Destroy and remove the pending items, they have been received by the server
+                                foreach (Thing thing in pendingItemStacks[args.Token].Things)
                                 {
-                                    // Pawns are discarded through the world rather than destroyed directly,
-                                    // which also tidies up anything still pointing at them (like a bond)
-                                    if (!pawn.Destroyed) Find.WorldPawns.PassToWorld(pawn, RimWorld.Planet.PawnDiscardDecideMode.Discard);
+                                    if (thing is Pawn pawn)
+                                    {
+                                        // Pawns are discarded through the world rather than destroyed directly,
+                                        // which also tidies up anything still pointing at them (like a bond)
+                                        if (!pawn.Destroyed) Find.WorldPawns.PassToWorld(pawn, RimWorld.Planet.PawnDiscardDecideMode.Discard);
+                                    }
+                                    else if (!thing.Destroyed)
+                                    {
+                                        thing.Destroy();
+                                    }
                                 }
-                                else if (!thing.Destroyed)
-                                {
-                                    thing.Destroy();
-                                }
-                            }
 
-                            pendingItemStacks.Remove(args.Token);
-                        }
-                        else
-                        {
-                            // Server failed to update the trade
-                            // Get all of the selected things from the item stacks and respawn them
-                            PendingThings pendingThings = pendingItemStacks[args.Token];
-                            for (int i = 0; i < pendingThings.Things.Length; i++)
+                                pendingItemStacks.Remove(args.Token);
+                            }
+                            else
                             {
-                                // Use the map we saved, since thing.Map is null once a thing is despawned
-                                Thing thing = pendingThings.Things[i];
-                                GenSpawn.Spawn(thing, thing.Position, pendingThings.Maps[i], thing.Rotation, WipeMode.VanishOrMoveAside);
+                                // Server failed to update the trade
+                                // Get all of the selected things from the item stacks and respawn them
+                                PendingThings pendingThings = pendingItemStacks[args.Token];
+                                for (int i = 0; i < pendingThings.Things.Length; i++)
+                                {
+                                    // Use the map we saved, since thing.Map is null once a thing is despawned
+                                    Thing thing = pendingThings.Things[i];
+                                    GenSpawn.Spawn(thing, thing.Position, pendingThings.Maps[i], thing.Rotation, WipeMode.VanishOrMoveAside);
+                                }
                             }
                         }
                     }
-                }
+                });
             }
         }
 
