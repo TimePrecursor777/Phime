@@ -121,6 +121,18 @@ namespace PhinixClient
         /// </summary>
         private object tradeWindowQueueLock = new object();
 
+        /// <summary>
+        /// Jobs queued to run on the next frame.
+        /// Network packets arrive on a background thread, but most of RimWorld (making pawns, spawning things,
+        /// sending letters) may only be touched from the main game thread. Handlers put that work in here
+        /// with <see cref="RunOnMainThread"/>, and <see cref="Update"/> runs it from the main thread.
+        /// </summary>
+        private Queue<Action> mainThreadQueue = new Queue<Action>();
+        /// <summary>
+        /// Lock object protecting <see cref="mainThreadQueue"/>.
+        /// </summary>
+        private object mainThreadQueueLock = new object();
+
         public Client(ModContentPack content) : base(content)
         {
             Instance = this;
@@ -278,71 +290,81 @@ namespace PhinixClient
             };
             trading.OnTradeCompleted += (sender, args) =>
             {
-                // Try get the other party's display name
-                if (Instance.TryGetDisplayName(args.OtherPartyUuid, out string displayName))
+                // Building the received things (especially animals) and dropping them in has to happen on the
+                // main game thread, but this event fires on the network thread, so hand the work over
+                RunOnMainThread(() =>
                 {
-                    // Strip formatting
-                    displayName = TextHelper.StripRichText(displayName);
-                }
-                else
-                {
-                    // Unknown display name, default to ???
-                    displayName = "???";
-                }
+                    // Try get the other party's display name
+                    if (Instance.TryGetDisplayName(args.OtherPartyUuid, out string displayName))
+                    {
+                        // Strip formatting
+                        displayName = TextHelper.StripRichText(displayName);
+                    }
+                    else
+                    {
+                        // Unknown display name, default to ???
+                        displayName = "???";
+                    }
 
-                // Convert all the received items into their Verse counterparts and strip out any unknown ones
-                //// While it would be less computationally-expensive to strip out unknown items beforehand, we would
-                //// have no idea whether we could actually make the item without another check, so we just piggy-back
-                //// off of the converter's checks and strip them out afterward.
-                Verse.Thing[] verseItems = args.Items
-                                                .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown)
-                                                .Where(thing => thing.def.defName != "UnknownItem")
-                                                .ToArray();
+                    // Convert all the received items into their Verse counterparts and strip out any unknown ones
+                    //// While it would be less computationally-expensive to strip out unknown items beforehand, we would
+                    //// have no idea whether we could actually make the item without another check, so we just piggy-back
+                    //// off of the converter's checks and strip them out afterward.
+                    Verse.Thing[] verseItems = args.Items
+                                                    .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown)
+                                                    .Where(thing => thing.def.defName != "UnknownItem")
+                                                    .ToArray();
 
 
-                // Launch drop pods to a trade spot on a home tile
-                LookTargets dropSpotLookTarget = dropPods(verseItems);
+                    // Launch drop pods to a trade spot on a home tile
+                    LookTargets dropSpotLookTarget = dropPods(verseItems);
 
-                // Generate a letter
-                LetterDef letterDef = DefDatabase<LetterDef>.GetNamed("TradeAccepted");
-                Find.LetterStack.ReceiveLetter("Phinix_trade_tradeCompletedLetter_label".Translate(), "Phinix_trade_tradeCompletedLetter_description".Translate(displayName), letterDef, dropSpotLookTarget);
+                    // Generate a letter
+                    LetterDef letterDef = DefDatabase<LetterDef>.GetNamed("TradeAccepted");
+                    Find.LetterStack.ReceiveLetter("Phinix_trade_tradeCompletedLetter_label".Translate(), "Phinix_trade_tradeCompletedLetter_description".Translate(displayName), letterDef, dropSpotLookTarget);
 
-                if (Prefs.DevMode) Verse.Log.Message(string.Format("Trade with {0} completed successfully", args.OtherPartyUuid));
+                    if (Prefs.DevMode) Verse.Log.Message(string.Format("Trade with {0} completed successfully", args.OtherPartyUuid));
+                });
             };
             trading.OnTradeCancelled += (sender, args) =>
             {
                 // Don't display anything if the other party is blocked and we want to hide their trades
                 if (!Settings.ShowBlockedTrades && Instance.Settings.BlockedUsers.Contains(args.OtherPartyUuid)) return;
 
-                // Try get the other party's display name
-                if (userManager.TryGetDisplayName(args.OtherPartyUuid, out string displayName))
+                // Building the received things (especially animals) and dropping them in has to happen on the
+                // main game thread, but this event fires on the network thread, so hand the work over
+                RunOnMainThread(() =>
                 {
-                    // Strip formatting
-                    displayName = TextHelper.StripRichText(displayName);
-                }
-                else
-                {
-                    // Unknown display name, default to ???
-                    displayName = "???";
-                }
+                    // Try get the other party's display name
+                    if (userManager.TryGetDisplayName(args.OtherPartyUuid, out string displayName))
+                    {
+                        // Strip formatting
+                        displayName = TextHelper.StripRichText(displayName);
+                    }
+                    else
+                    {
+                        // Unknown display name, default to ???
+                        displayName = "???";
+                    }
 
-                // Convert all the received items into their Verse counterparts and strip out any unknown ones
-                //// While it would be less computationally-expensive to strip out unknown items beforehand, we would
-                //// have no idea whether we could actually make the item without another check, so we just piggy-back
-                //// off of the converter's checks and strip them out afterward.
-                Verse.Thing[] verseItems = args.Items
-                                                .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown)
-                                                .Where(thing => thing.def.defName != "UnknownItem")
-                                                .ToArray();
+                    // Convert all the received items into their Verse counterparts and strip out any unknown ones
+                    //// While it would be less computationally-expensive to strip out unknown items beforehand, we would
+                    //// have no idea whether we could actually make the item without another check, so we just piggy-back
+                    //// off of the converter's checks and strip them out afterward.
+                    Verse.Thing[] verseItems = args.Items
+                                                    .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown)
+                                                    .Where(thing => thing.def.defName != "UnknownItem")
+                                                    .ToArray();
 
-                // Launch drop pods to a trade spot on a home tile
-                LookTargets dropSpotLookTarget = dropPods(verseItems);
+                    // Launch drop pods to a trade spot on a home tile
+                    LookTargets dropSpotLookTarget = dropPods(verseItems);
 
-                // Generate a letter
-                LetterDef letterDef = DefDatabase<LetterDef>.GetNamed("TradeCancelled");
-                Find.LetterStack.ReceiveLetter("Phinix_trade_tradeCancelled_label".Translate(), "Phinix_trade_tradeCancelled_description".Translate(displayName), letterDef, dropSpotLookTarget);
+                    // Generate a letter
+                    LetterDef letterDef = DefDatabase<LetterDef>.GetNamed("TradeCancelled");
+                    Find.LetterStack.ReceiveLetter("Phinix_trade_tradeCancelled_label".Translate(), "Phinix_trade_tradeCancelled_description".Translate(displayName), letterDef, dropSpotLookTarget);
 
-                if (Prefs.DevMode) Verse.Log.Message(string.Format("Trade with {0} cancelled", args.OtherPartyUuid));
+                    if (Prefs.DevMode) Verse.Log.Message(string.Format("Trade with {0} cancelled", args.OtherPartyUuid));
+                });
             };
             trading.OnTradeUpdateFailure += (sender, args) =>
             {
@@ -522,6 +544,37 @@ namespace PhinixClient
                     Find.WindowStack.Add(new TradeWindow(tradeWindowQueue.Pop()));
                 }
             }
+
+            // Take every queued job out first, then run them outside the lock.
+            // That way a job that queues another job can't deadlock, and the network thread isn't kept waiting.
+            Action[] jobs;
+            lock (mainThreadQueueLock)
+            {
+                jobs = mainThreadQueue.ToArray();
+                mainThreadQueue.Clear();
+            }
+            foreach (Action job in jobs)
+            {
+                // One broken job shouldn't stop the rest (or the game's update loop) from running
+                try
+                {
+                    job();
+                }
+                catch (Exception e)
+                {
+                    Verse.Log.Error(string.Format("Phinix main thread job failed: {0}", e));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Queues a job to run on the main game thread on the next frame.
+        /// Use this for anything that touches the game world from a network event handler.
+        /// </summary>
+        /// <param name="job">Job to run, e.g. a lambda like <c>() => { ... }</c></param>
+        public void RunOnMainThread(Action job)
+        {
+            lock (mainThreadQueueLock) mainThreadQueue.Enqueue(job);
         }
 
         /// <summary>
