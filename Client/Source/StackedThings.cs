@@ -10,18 +10,54 @@ namespace PhinixClient
     {
         public List<Thing> Things;
 
-        public int Count => Things.Sum(thing => thing.stackCount);
+        /// <summary>
+        /// Set when this row only displays an animal on offer, without a real animal behind it.
+        /// Building a real animal just to draw its name would mean generating a whole pawn every time the trade updates.
+        /// </summary>
+        private ProtoAnimal displayAnimal;
 
-        public string Label => Things.First().LabelCapNoCount;
-        public ThingDef ThingDef => Things.First()?.def;
-        public ThingDef StuffDef => Things.First()?.Stuff;
-        public ThingStyleDef StyleDef => Things.First()?.StyleDef;
+        // "=>" makes a read-only property that is recalculated each time it's read, a bit like Python's @property
+        public int Count => displayAnimal != null ? 1 : Things.Sum(thing => thing.stackCount);
+
+        public string Label => displayAnimal != null ? getAnimalLabel(displayAnimal) : Things.First().LabelCapNoCount;
+        public ThingDef ThingDef => displayAnimal != null ? DefDatabase<ThingDef>.GetNamedSilentFail(displayAnimal.DefName) : Things.First()?.def;
+        // FirstOrDefault gives null on an empty list instead of throwing, which display-only rows need
+        public ThingDef StuffDef => Things.FirstOrDefault()?.Stuff;
+        public ThingStyleDef StyleDef => Things.FirstOrDefault()?.StyleDef;
 
         public int Selected = 0;
 
         public StackedThings(IEnumerable<Thing> things)
         {
             this.Things = things.ToList();
+        }
+
+        /// <summary>
+        /// Creates a display-only row for an animal on offer.
+        /// </summary>
+        /// <param name="protoAnimal">Animal to display</param>
+        /// <returns>Row with no real things in it</returns>
+        public static StackedThings ForDisplayAnimal(ProtoAnimal protoAnimal)
+        {
+            // "new X(...) { field = value }" sets fields right after construction, like keyword arguments
+            return new StackedThings(Enumerable.Empty<Thing>()) { displayAnimal = protoAnimal };
+        }
+
+        /// <summary>
+        /// Builds a label like "Bessie (muffalo)" or just "Muffalo" for an unnamed animal.
+        /// </summary>
+        /// <param name="protoAnimal">Animal to label</param>
+        /// <returns>Label text</returns>
+        private static string getAnimalLabel(ProtoAnimal protoAnimal)
+        {
+            // Fall back to the raw def name if the receiver doesn't have this species (e.g. a missing mod)
+            ThingDef raceDef = DefDatabase<ThingDef>.GetNamedSilentFail(protoAnimal.DefName);
+            string speciesLabel = raceDef != null ? raceDef.label : protoAnimal.DefName;
+
+            // $"..." is C#'s version of a Python f-string
+            return string.IsNullOrEmpty(protoAnimal.CustomName)
+                ? speciesLabel.CapitalizeFirst()
+                : $"{protoAnimal.CustomName} ({speciesLabel})";
         }
 
         /// <summary>

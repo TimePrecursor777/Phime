@@ -127,13 +127,23 @@ namespace PhinixClient
                 things = haulDestinations.SelectMany(haulDestination => haulDestination.HeldThings);
             }
 
+            // Only items go in this list; pawns are added separately below
+            things = things.Where(thing => thing.def.category == ThingCategory.Item && !thing.def.IsCorpse);
+
+            // Add every tame animal on our home maps, skipping dead ones
+            // Animals can't stack with each other, so GroupThings gives each one its own row
+            IEnumerable<Thing> animals = homeMaps
+                .SelectMany(map => map.mapPawns.SpawnedColonyAnimals)
+                .Where(animal => !animal.Dead);
+            things = things.Concat(animals);
+
             // Group all items and cache them for later
-            availableItems = StackedThings.GroupThings(things.Where(thing => thing.def.category == ThingCategory.Item && !thing.def.IsCorpse));
+            availableItems = StackedThings.GroupThings(things);
             filteredAvailableItems = availableItems;
 
             // Pre-fill offer caches as well
-            ourOfferCache = StackedThings.GroupThings(trade.ItemsOnOffer.Select(TradingThingConverter.ConvertThingFromProtoOrUnknown));
-            theirOfferCache = StackedThings.GroupThings(trade.OtherPartyItemsOnOffer.Select(TradingThingConverter.ConvertThingFromProtoOrUnknown));
+            ourOfferCache = buildOfferCache(trade.ItemsOnOffer);
+            theirOfferCache = buildOfferCache(trade.OtherPartyItemsOnOffer);
         }
 
         public override void Close(bool doCloseSound = true)
@@ -156,8 +166,8 @@ namespace PhinixClient
                     trade = updatedTrade;
 
                     // Refresh trade caches
-                    ourOfferCache = StackedThings.GroupThings(trade.ItemsOnOffer.Select(TradingThingConverter.ConvertThingFromProtoOrUnknown));
-                    theirOfferCache = StackedThings.GroupThings(trade.OtherPartyItemsOnOffer.Select(TradingThingConverter.ConvertThingFromProtoOrUnknown));
+                    ourOfferCache = buildOfferCache(trade.ItemsOnOffer);
+                    theirOfferCache = buildOfferCache(trade.OtherPartyItemsOnOffer);
 
                     // Reset the update flag
                     tradeUpdated = false;
@@ -234,6 +244,7 @@ namespace PhinixClient
                     // Create a new token
                     string token = Guid.NewGuid().ToString();
                     List <Thing> selectedThings = new List<Thing>();
+                    List<Map> selectedThingMaps = new List<Map>();
 
                     // Collect all our things and despawn them all
                     foreach (StackedThings itemStack in availableItems)
@@ -241,9 +252,11 @@ namespace PhinixClient
                         // Pop the selected things from the stack
                         Thing[] things = itemStack.PopSelected().ToArray();
 
-                        // Despawn each spawned thing
+                        // Remember each thing's map, then despawn it
+                        // (despawning clears thing.Map, and we need it to put things back if the server says no)
                         foreach (Thing thing in things)
                         {
+                            selectedThingMaps.Add(thing.MapHeld);
                             if (thing.Spawned) thing.DeSpawn();
                         }
 
@@ -257,6 +270,7 @@ namespace PhinixClient
                         pendingItemStacks.Add(token, new PendingThings
                         {
                             Things = selectedThings.ToArray(),
+                            Maps = selectedThingMaps.ToArray(),
                             Timestamp = DateTime.UtcNow
                         });
                     }
@@ -335,6 +349,30 @@ namespace PhinixClient
         }
 
         /// <summary>
+        /// Turns the things on offer into rows for the offer lists.
+        /// Items are rebuilt and stacked as before. Animals get a display-only row each, so we don't generate a whole
+        /// new pawn every time the trade updates.
+        /// </summary>
+        /// <param name="protoThings">Things on offer</param>
+        /// <returns>Rows to draw</returns>
+        private static List<StackedThings> buildOfferCache(IEnumerable<ProtoThing> protoThings)
+        {
+            // ToList() runs the query once so we don't loop over protoThings twice
+            List<ProtoThing> offer = protoThings.ToList();
+
+            // Like Python's [t for t in offer if t.Animal is None]
+            List<StackedThings> rows = StackedThings.GroupThings(offer
+                .Where(protoThing => protoThing.Animal == null)
+                .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown));
+
+            rows.AddRange(offer
+                .Where(protoThing => protoThing.Animal != null)
+                .Select(protoThing => StackedThings.ForDisplayAnimal(protoThing.Animal)));
+
+            return rows;
+        }
+
+        /// <summary>
         /// Event handler for the <see cref="Client.OnTradeCompleted"/> and <see cref="Client.OnTradeCancelled"/> events.
         /// </summary>
         /// <param name="sender"></param>
@@ -371,7 +409,16 @@ namespace PhinixClient
                             // Destroy and remove the pending items, they have been received by the server
                             foreach (Thing thing in pendingItemStacks[args.Token].Things)
                             {
-                                if (!thing.Destroyed) thing.Destroy();
+                                if (thing is Pawn pawn)
+                                {
+                                    // Pawns are discarded through the world rather than destroyed directly,
+                                    // which also tidies up anything still pointing at them (like a bond)
+                                    if (!pawn.Destroyed) Find.WorldPawns.PassToWorld(pawn, RimWorld.Planet.PawnDiscardDecideMode.Discard);
+                                }
+                                else if (!thing.Destroyed)
+                                {
+                                    thing.Destroy();
+                                }
                             }
 
                             pendingItemStacks.Remove(args.Token);
@@ -380,10 +427,12 @@ namespace PhinixClient
                         {
                             // Server failed to update the trade
                             // Get all of the selected things from the item stacks and respawn them
-                            IEnumerable<Thing> things = pendingItemStacks[args.Token].Things;
-                            foreach (Thing thing in things)
+                            PendingThings pendingThings = pendingItemStacks[args.Token];
+                            for (int i = 0; i < pendingThings.Things.Length; i++)
                             {
-                                GenSpawn.Spawn(thing, thing.Position, thing.Map, thing.Rotation, WipeMode.VanishOrMoveAside);
+                                // Use the map we saved, since thing.Map is null once a thing is despawned
+                                Thing thing = pendingThings.Things[i];
+                                GenSpawn.Spawn(thing, thing.Position, pendingThings.Maps[i], thing.Rotation, WipeMode.VanishOrMoveAside);
                             }
                         }
                     }
@@ -470,8 +519,8 @@ namespace PhinixClient
             float currentY = contentRect.yMin;
             foreach (StackedThings stack in stacks)
             {
-                // Don't deal with empty stacks
-                if (stack.Things.Count == 0) continue;
+                // Don't deal with empty stacks (Count is 1 for display-only animal rows, which have no Things)
+                if (stack.Count == 0) continue;
 
                 Rect rowRect = new Rect(contentRect.xMin, currentY, contentRect.width, ROW_HEIGHT);
                 Rect iconRect = rowRect.LeftPartPixels(ICON_WIDTH);
