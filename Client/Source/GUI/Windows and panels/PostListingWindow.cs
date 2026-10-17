@@ -82,6 +82,9 @@ namespace PhinixClient
             // Escape or the X still close it, and the Post button sends it
             closeOnAccept = false;
 
+            // Let the player drag the window around by its edges, like RimWorld's own pop-ups
+            draggable = true;
+
             if (allItemDefs == null)
             {
                 // Items you can carry and trade. Corpses, unfinished items, and things like minified buildings are left out
