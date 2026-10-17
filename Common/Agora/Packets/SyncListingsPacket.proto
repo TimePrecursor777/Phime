@@ -3,5 +3,5 @@ package Agora;
 import "Packets/Listing.proto";
 
 message SyncListingsPacket {
-  repeated Listing Listings = 1;
+  Listing Listings = 1;
 }

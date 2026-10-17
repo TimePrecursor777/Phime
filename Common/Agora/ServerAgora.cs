@@ -115,6 +115,38 @@ namespace Agora
         /// <param name="packet">Incoming <see cref="PostListingPacket"/></param>
         private void postListingPacketHandler(string connectionId, PostListingPacket packet)
         {
+            if (!authenticator.IsAuthenticated(connectionId, packet.SessionId))
+            {
+                sendPostListingResponse(connectionId, false, "", "Session is not valid");
+                return;
+            }
+            if (!userManager.IsLoggedIn(connectionId, packet.Uuid))
+            {
+                sendPostListingResponse(connectionId, false, "", "Session is not valid");
+                return;
+            }
+            if (!postRateLimiter.TryAct(packet.Uuid))
+            {
+                sendPostListingResponse(connectionId, false, "", "You are posting too fast!");
+                return;
+            }
+            if (packet.Listing == null)
+            {
+                sendPostListingResponse(connectionId, false, "", "No listing was sent");
+                return;
+            }
+            Listing listing = packet.Listing.Clone();                        // make a copy called "listing"
+            listing.ListingId = Guid.NewGuid().ToString();                   // replace its ID with a new random one
+            listing.PosterUuid = packet.Uuid;                                // replace the poster with who really sent it
+            listing.PostedTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();  // replace the time with the server's clock
+            listing.Note = TextHelper.SanitiseRichText(listing.Note);        // replace the note with a cleaned version
+            lock (listingsLock)
+            {
+                listings.Add(listing.ListingId, listing);
+            }
+
+            sendPostListingResponse(connectionId, true, listing.ListingId, "");
+            broadcastSyncListings();
             // TODO (yours): fill this in. ServerChat.chatMessagePacketHandler does almost the same steps.
             //
             // 1. Refuse it if the session isn't authenticated:   authenticator.IsAuthenticated(connectionId, packet.SessionId)
@@ -141,6 +173,28 @@ namespace Agora
         /// <param name="packet">Incoming <see cref="RemoveListingPacket"/></param>
         private void removeListingPacketHandler(string connectionId, RemoveListingPacket packet)
         {
+            if (!authenticator.IsAuthenticated(connectionId, packet.SessionId))
+            {
+                sendPostListingResponse(connectionId, false, "", "Session is not valid");
+                return;
+            }
+            
+
+            if (!userManager.IsLoggedIn(connectionId, packet.Uuid))
+            {
+                sendPostListingResponse(connectionId, false, "", "Session is not valid");
+                return;
+            }
+
+            lock (listingsLock)
+            {
+                if (!listings.TryGetValue(packet.ListingId, out Listing listing)) return;  // not found
+                if (listing.PosterUuid != packet.Uuid) return;                            // not theirs
+                listings.Remove(packet.ListingId);
+            }
+
+            broadcastSyncListings();
+            
             // TODO (yours): fill this in.
             //
             // 1. Ignore it (just return) if the session isn't authenticated or the user isn't logged in, same checks as above
