@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agora.cs" />
+    <Compile Include="ClientAgora.cs" />
     <Compile Include="Packets\compiled\Listing.cs" />
     <Compile Include="Packets\compiled\PostListingPacket.cs" />
     <Compile Include="Packets\compiled\PostListingResponsePacket.cs" />
