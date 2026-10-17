@@ -113,6 +113,7 @@
     <Compile Include="GUI\Basic Widgets\TextWidget.cs" />
     <Compile Include="GUI\Basic Widgets\ThingIconWidget.cs" />
     <Compile Include="GUI\Compound Widgets\ChatMessageList.cs" />
+    <Compile Include="GUI\Compound Widgets\MarketBoardList.cs" />
     <Compile Include="GUI\Compound Widgets\DynamicTextWidget.cs" />
     <Compile Include="GUI\Compound Widgets\ItemStackRow.cs" />
     <Compile Include="GUI\Compound Widgets\TradeList.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="GUI\Containers\VerticalPaddedContainer.cs" />
     <Compile Include="GUI\Displayable.cs" />
     <Compile Include="GUI\Windows and panels\CredentialsWindow.cs" />
+    <Compile Include="GUI\Windows and panels\PostListingWindow.cs" />
     <Compile Include="GUI\Windows and panels\ServerTab.cs" />
     <Compile Include="GUI\Windows and panels\ServerTabButtonWorker.cs" />
     <Compile Include="GUI\Windows and panels\SettingsWindow.cs" />

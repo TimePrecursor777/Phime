@@ -26,6 +26,9 @@ namespace PhinixClient
 
         private const float RIGHT_COLUMN_WIDTH = 210f;
 
+        private const float POST_LISTING_BUTTON_HEIGHT = 30f;
+        private const float POST_LISTING_BUTTON_WIDTH = 160f;
+
         // TODO: Add some kind of option to resize chat tab. Maybe a draggable corner?
         public override Vector2 InitialSize => new Vector2(1000f, 680f);
 
@@ -38,6 +41,7 @@ namespace PhinixClient
         private readonly ChatMessageList chatMessageList = new ChatMessageList();
         private readonly UserList userList = new UserList();
         private readonly TradeList tradeList = new TradeList();
+        private readonly MarketBoardList marketBoardList = new MarketBoardList();
 
         private bool chatMessageFieldFocused = false;
 
@@ -46,6 +50,7 @@ namespace PhinixClient
             // Populate the tab list
             tabList.Add(new TabRecord("Phinix_tabs_chat".Translate(), () => activeTab = 0, () => activeTab == 0));
             tabList.Add(new TabRecord("Phinix_tabs_trades".Translate(), () => activeTab = 1, () => activeTab == 1));
+            tabList.Add(new TabRecord("Phinix_tabs_market".Translate(), () => activeTab = 2, () => activeTab == 2));
         }
 
         ///<inheritdoc/>
@@ -78,6 +83,9 @@ namespace PhinixClient
                     break;
                 case 1: // Trades tab
                     GenerateTrades(usableRect); // Trades
+                    break;
+                case 2: // Market tab
+                    GenerateMarket(usableRect); // Market board
                     break;
                 default:
                     Widgets.DrawMenuSection(usableRect); // Placeholder
@@ -177,6 +185,32 @@ namespace PhinixClient
                 Widgets.DrawMenuSection(inRect);
                 Widgets.NoneLabelCenteredVertically(inRect, "Phinix_chat_pleaseLogInPlaceholder".Translate());
             }
+        }
+
+        /// <summary>
+        /// Generates the market board, with a button above it for posting a new listing.
+        /// </summary>
+        /// <param name="inRect">Container to draw within</param>
+        private void GenerateMarket(Rect inRect)
+        {
+            if (!Instance.Online)
+            {
+                Widgets.DrawMenuSection(inRect);
+                Widgets.NoneLabelCenteredVertically(inRect, "Phinix_chat_pleaseLogInPlaceholder".Translate());
+                return;
+            }
+
+            Rect postButtonRect = inRect.TopPartPixels(POST_LISTING_BUTTON_HEIGHT).RightPartPixels(POST_LISTING_BUTTON_WIDTH);
+            Rect boardRect = inRect.BottomPartPixels(inRect.height - (POST_LISTING_BUTTON_HEIGHT + DEFAULT_SPACING));
+
+            // Post listing button
+            if (Widgets.ButtonText(postButtonRect, "Phinix_market_newListingButton".Translate()))
+            {
+                Find.WindowStack.Add(new PostListingWindow());
+            }
+
+            // Board
+            marketBoardList.Draw(boardRect);
         }
 
         /// <summary>

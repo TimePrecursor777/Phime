@@ -2,6 +2,7 @@
 <LanguageData>
     <Phinix_tabs_chat>Chat</Phinix_tabs_chat>
     <Phinix_tabs_trades>Trades</Phinix_tabs_trades>
+    <Phinix_tabs_market>Market</Phinix_tabs_market>
 
     <Phinix_chat_settingsButton>Settings</Phinix_chat_settingsButton>
     <Phinix_chat_sendButton>Send</Phinix_chat_sendButton>
@@ -79,4 +80,24 @@
     <Phinix_error_tradeCreationFailedMessage>Could not start a trade: {0} ({1})</Phinix_error_tradeCreationFailedMessage>
     <Phinix_error_tradeUpdateFailedTitle>Trade update failed</Phinix_error_tradeUpdateFailedTitle>
     <Phinix_error_tradeUpdateFailedMessage>Could not update your trade with {0}: {1} ({2})\nYour items have been shipped back to you.</Phinix_error_tradeUpdateFailedMessage>
+
+    <!-- Market board -->
+    <Phinix_market_noListingsPlaceholder>Nobody has posted anything yet.</Phinix_market_noListingsPlaceholder>
+    <Phinix_market_offering>Offering</Phinix_market_offering>
+    <Phinix_market_wanted>Wanted</Phinix_market_wanted>
+    <Phinix_market_tradeButton>Trade</Phinix_market_tradeButton>
+    <Phinix_market_removeButton>Remove</Phinix_market_removeButton>
+    <Phinix_market_justNow>just now</Phinix_market_justNow>
+    <Phinix_market_minutesAgo>{0} min ago</Phinix_market_minutesAgo>
+    <Phinix_market_hoursAgo>{0} h ago</Phinix_market_hoursAgo>
+    <Phinix_market_daysAgo>{0} d ago</Phinix_market_daysAgo>
+    <Phinix_market_newListingButton>Post a listing</Phinix_market_newListingButton>
+    <Phinix_market_postTitle>New listing</Phinix_market_postTitle>
+    <Phinix_market_searchLabel>Find items to add:</Phinix_market_searchLabel>
+    <Phinix_market_typeToSearch>Type at least 2 letters to search.</Phinix_market_typeToSearch>
+    <Phinix_market_addButton>Add</Phinix_market_addButton>
+    <Phinix_market_nothingAdded>Add some items from the search above.</Phinix_market_nothingAdded>
+    <Phinix_market_noteLabel>Note (optional):</Phinix_market_noteLabel>
+    <Phinix_market_postButton>Post</Phinix_market_postButton>
+    <Phinix_market_postFailed>Couldn't post your listing: {0}</Phinix_market_postFailed>
 </LanguageData>

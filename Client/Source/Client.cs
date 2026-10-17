@@ -225,6 +225,15 @@ namespace PhinixClient
                 if (Prefs.DevMode) Verse.Log.Message(string.Format("New user created: {0} ({1}) - {2}ogged in", args.DisplayName, args.Uuid, args.LoggedIn ? "L" : "Not l"));
             };
 
+            // Tell the player if the server turned down their listing (e.g. posting too quickly)
+            agora.OnPostListingResponse += (sender, args) =>
+            {
+                if (args.Success) return;
+
+                // Messages are drawn by the game, so they have to be added on the main thread
+                RunOnMainThread(() => Messages.Message("Phinix_market_postFailed".Translate(args.FailureMessage), MessageTypeDefOf.RejectInput, historical: false));
+            };
+
             // Subscribe to chat events
             chat.OnChatMessageReceived += (sender, args) =>
             {
