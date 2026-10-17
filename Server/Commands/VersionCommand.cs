@@ -19,6 +19,7 @@ namespace PhinixServer
         public override bool Execute(List<string> args)
         {
             Console.WriteLine("Server: " + Server.Version);
+            Console.WriteLine("Protocol: " + Authenticator.PROTOCOL_VERSION);
             Console.WriteLine("Connections: " + NetCommon.Version);
             Console.WriteLine("Authentication: " + Authenticator.Version);
             Console.WriteLine("UserManagement: " + UserManager.Version);

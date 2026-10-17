@@ -368,6 +368,19 @@ namespace Authentication
         /// <param name="packet">Incoming packet</param>
         private void authenticatePacketHandler(string connectionId, AuthenticatePacket packet)
         {
+            // Turn away clients running a different version of the mod before anything else
+            if (packet.ProtocolVersion != PROTOCOL_VERSION)
+            {
+                string reason = packet.ProtocolVersion < PROTOCOL_VERSION
+                    ? "Your Phinix mod is out of date. Please update it to join this server."
+                    : "This server is running an older version of Phinix than your mod. Ask the server owner to update it.";
+                sendFailedAuthResponsePacket(connectionId, AuthFailureReason.ProtocolVersion, string.Format("{0} (Your version: {1}, server version: {2})", reason, packet.ProtocolVersion, PROTOCOL_VERSION));
+
+                RaiseLogEntry(new LogEventArgs(string.Format("Auth failure for {0}: Protocol version {1} doesn't match ours ({2})", connectionId.Highlight(HighlightType.ConnectionID), packet.ProtocolVersion, PROTOCOL_VERSION), LogLevel.INFO));
+
+                return;
+            }
+
             // Check the supplied credentials are of the appropriate type
             if (packet.AuthType != authType)
             {

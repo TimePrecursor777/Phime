@@ -381,7 +381,8 @@ namespace Authentication
                 AuthType = credential.AuthType,
                 SessionId = sessionId,
                 Username = credential.Username,
-                Password = credential.Password
+                Password = credential.Password,
+                ProtocolVersion = PROTOCOL_VERSION
             };
 
             // Pack it into an Any for transmission
