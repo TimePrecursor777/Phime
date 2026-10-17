@@ -3,6 +3,7 @@
     <Phinix_tabs_chat>Chat</Phinix_tabs_chat>
     <Phinix_tabs_trades>Trades</Phinix_tabs_trades>
     <Phinix_tabs_market>Market</Phinix_tabs_market>
+    <Phinix_tabs_bounties>Bounties</Phinix_tabs_bounties>
     <Phinix_tabs_newCount>{0} · New ({1})</Phinix_tabs_newCount>
 
     <Phinix_chat_settingsButton>Settings</Phinix_chat_settingsButton>
@@ -104,4 +105,36 @@
     <Phinix_market_noteLabel>Note (optional):</Phinix_market_noteLabel>
     <Phinix_market_postButton>Post</Phinix_market_postButton>
     <Phinix_market_postFailed>Couldn't post your listing: {0}</Phinix_market_postFailed>
+
+    <!-- Bounties -->
+    <Phinix_bounty_noBountiesPlaceholder>No bounties are up right now.</Phinix_bounty_noBountiesPlaceholder>
+    <Phinix_bounty_newBountyButton>Post a bounty</Phinix_bounty_newBountyButton>
+    <Phinix_bounty_postTitle>New bounty</Phinix_bounty_postTitle>
+    <Phinix_bounty_wantLabel>I want:</Phinix_bounty_wantLabel>
+    <Phinix_bounty_payLabel>I'll pay (taken from your colony now, held until the bounty ends):</Phinix_bounty_payLabel>
+    <Phinix_bounty_postButton>Post bounty</Phinix_bounty_postButton>
+    <Phinix_bounty_anyQuality>Any quality</Phinix_bounty_anyQuality>
+    <Phinix_bounty_titleLabel>Bounty · {0}</Phinix_bounty_titleLabel>
+    <Phinix_bounty_wantsLabel>Wants: {0}</Phinix_bounty_wantsLabel>
+    <Phinix_bounty_rewardLabel>Reward: {0}</Phinix_bounty_rewardLabel>
+    <Phinix_bounty_fulfilButton>Fulfil</Phinix_bounty_fulfilButton>
+    <Phinix_bounty_cancelButton>Cancel</Phinix_bounty_cancelButton>
+    <Phinix_bounty_cantFulfilTip>Your colony doesn't have everything this bounty wants (in a stockpile, at a good enough quality).</Phinix_bounty_cantFulfilTip>
+    <Phinix_bounty_confirmFulfil>Give {0} {1}?\n\nIn return you'll receive {2} by drop pod.</Phinix_bounty_confirmFulfil>
+    <Phinix_bounty_notEnoughItems>Your colony no longer has everything this bounty wants.</Phinix_bounty_notEnoughItems>
+    <Phinix_bounty_notEnoughReward>Your colony no longer has everything you picked as the reward.</Phinix_bounty_notEnoughReward>
+    <Phinix_bounty_postFailed>Couldn't post your bounty, so its reward was put back: {0}</Phinix_bounty_postFailed>
+    <Phinix_bounty_fulfilFailed>Couldn't fulfil that bounty, so your items were put back: {0}</Phinix_bounty_fulfilFailed>
+    <Phinix_bounty_expiringNow>expiring now</Phinix_bounty_expiringNow>
+    <Phinix_bounty_minutesLeft>{0} min left</Phinix_bounty_minutesLeft>
+    <Phinix_bounty_hoursLeft>{0} h left</Phinix_bounty_hoursLeft>
+    <Phinix_bounty_daysLeft>{0} d left</Phinix_bounty_daysLeft>
+    <Phinix_bounty_delivery_Fulfilled_label>Bounty fulfilled</Phinix_bounty_delivery_Fulfilled_label>
+    <Phinix_bounty_delivery_Fulfilled_description>{0} fulfilled your bounty. What you asked for is arriving by drop pod.</Phinix_bounty_delivery_Fulfilled_description>
+    <Phinix_bounty_delivery_Reward_label>Bounty reward</Phinix_bounty_delivery_Reward_label>
+    <Phinix_bounty_delivery_Reward_description>You fulfilled {0}'s bounty. Your reward is arriving by drop pod.</Phinix_bounty_delivery_Reward_description>
+    <Phinix_bounty_delivery_Cancelled_label>Bounty cancelled</Phinix_bounty_delivery_Cancelled_label>
+    <Phinix_bounty_delivery_Cancelled_description>You cancelled your bounty. Its reward is being returned by drop pod.</Phinix_bounty_delivery_Cancelled_description>
+    <Phinix_bounty_delivery_Expired_label>Bounty expired</Phinix_bounty_delivery_Expired_label>
+    <Phinix_bounty_delivery_Expired_description>Nobody fulfilled your bounty in time, so its reward is being returned by drop pod.</Phinix_bounty_delivery_Expired_description>
 </LanguageData>

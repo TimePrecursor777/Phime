@@ -45,6 +45,7 @@ namespace PhinixClient
         private readonly UserList userList = new UserList();
         private readonly TradeList tradeList = new TradeList();
         private readonly MarketBoardList marketBoardList = new MarketBoardList();
+        private readonly BountyBoardList bountyBoardList = new BountyBoardList();
 
         private bool chatMessageFieldFocused = false;
 
@@ -54,6 +55,7 @@ namespace PhinixClient
             tabList.Add(new TabRecord("Phinix_tabs_chat".Translate(), () => activeTab = 0, () => activeTab == 0));
             tabList.Add(new TabRecord("Phinix_tabs_trades".Translate(), () => activeTab = 1, () => activeTab == 1));
             tabList.Add(new TabRecord("Phinix_tabs_market".Translate(), () => activeTab = 2, () => activeTab == 2));
+            tabList.Add(new TabRecord("Phinix_tabs_bounties".Translate(), () => activeTab = 3, () => activeTab == 3));
         }
 
         ///<inheritdoc/>
@@ -79,6 +81,7 @@ namespace PhinixClient
             tabList[0].label = tabLabel("Phinix_tabs_chat", activeTab == 0 ? 0 : Instance.NewChatCount);
             tabList[1].label = tabLabel("Phinix_tabs_trades", activeTab == 1 ? 0 : Instance.NewTradeCount);
             tabList[2].label = tabLabel("Phinix_tabs_market", activeTab == 2 ? 0 : Instance.NewListingCount);
+            tabList[3].label = tabLabel("Phinix_tabs_bounties", activeTab == 3 ? 0 : Instance.NewBountyCount);
             TabDrawer.DrawTabs(usableRect, tabList, 200f);
 
             switch (activeTab)
@@ -94,6 +97,10 @@ namespace PhinixClient
                 case 2: // Market tab
                     GenerateMarket(usableRect); // Market board
                     if (Instance.Online) Instance.MarkListingsSeen();
+                    break;
+                case 3: // Bounties tab
+                    GenerateBounties(usableRect); // Bounty board
+                    if (Instance.Online) Instance.MarkBountiesSeen();
                     break;
                 default:
                     Widgets.DrawMenuSection(usableRect); // Placeholder
@@ -241,6 +248,30 @@ namespace PhinixClient
 
             // Board
             marketBoardList.Draw(boardRect);
+        }
+
+        /// <summary>
+        /// Generates the bounty board, with a button above it for posting a new bounty.
+        /// </summary>
+        /// <param name="inRect">Container to draw within</param>
+        private void GenerateBounties(Rect inRect)
+        {
+            if (!Instance.Online)
+            {
+                Widgets.DrawMenuSection(inRect);
+                Widgets.NoneLabelCenteredVertically(inRect, "Phinix_chat_pleaseLogInPlaceholder".Translate());
+                return;
+            }
+
+            Rect postButtonRect = inRect.TopPartPixels(POST_LISTING_BUTTON_HEIGHT).RightPartPixels(POST_LISTING_BUTTON_WIDTH);
+            Rect boardRect = inRect.BottomPartPixels(inRect.height - (POST_LISTING_BUTTON_HEIGHT + DEFAULT_SPACING));
+
+            if (Widgets.ButtonText(postButtonRect, "Phinix_bounty_newBountyButton".Translate()))
+            {
+                Find.WindowStack.Add(new PostBountyWindow());
+            }
+
+            bountyBoardList.Draw(boardRect);
         }
 
         /// <summary>

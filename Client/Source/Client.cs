@@ -74,10 +74,17 @@ namespace PhinixClient
         public event EventHandler OnListingsChanged;
         public event EventHandler<PostListingResponsePacket> OnPostListingResponse;
 
+        // Bounties, passed straight through to ClientAgora (its bounty half is in ClientAgora.Bounties.cs)
+        public Agora.Bounty[] GetBounties() => agora.GetBounties();
+        public void PostBounty(string token, IEnumerable<ProtoThing> wantedItems, IEnumerable<ProtoThing> rewardItems, string note) => agora.PostBounty(token, wantedItems, rewardItems, note);
+        public void CancelBounty(string bountyId) => agora.CancelBounty(bountyId);
+        public void FulfilBounty(string token, string bountyId, IEnumerable<ProtoThing> items) => agora.FulfilBounty(token, bountyId, items);
+
         // "New" counts for the Phinix window's tabs. These sets remember which trades and listings the player has
         // already seen, like a Python set(). Only the UI uses them, so they're always on the main thread and need no lock
         private readonly HashSet<string> seenTradeIds = new HashSet<string>();
         private readonly HashSet<string> seenListingIds = new HashSet<string>();
+        private readonly HashSet<string> seenBountyIds = new HashSet<string>();
 
         /// <summary>
         /// Number of chat messages that arrived since the chat tab was last open.
@@ -109,6 +116,16 @@ namespace PhinixClient
         /// Marks every listing on the board as seen, clearing the Market tab's "New" count.
         /// </summary>
         public void MarkListingsSeen() => seenListingIds.UnionWith(GetListings().Select(listing => listing.ListingId));
+
+        /// <summary>
+        /// Number of other people's bounties posted since the bounties tab was last open.
+        /// </summary>
+        public int NewBountyCount => GetBounties().Count(bounty => bounty.PosterUuid != Uuid && !seenBountyIds.Contains(bounty.BountyId));
+
+        /// <summary>
+        /// Marks every bounty as seen, clearing the Bounties tab's "New" count.
+        /// </summary>
+        public void MarkBountiesSeen() => seenBountyIds.UnionWith(GetBounties().Select(bounty => bounty.BountyId));
 
         /// <summary>
         /// Gets active trades, leaving out blocked users' trades if the player has chosen to hide them.
@@ -268,6 +285,23 @@ namespace PhinixClient
             };
 
             // Tell the player if the server turned down their listing (e.g. posting too quickly)
+            // Bounty answers from the server. Each carries the token of the items BountyEscrow is holding, and Resolve
+            // either destroys them (the server kept them) or puts them back on the map (the server refused).
+            // Both touch the map, so they run on the main thread
+            agora.OnPostBountyResponse += (sender, args) => RunOnMainThread(() =>
+            {
+                BountyEscrow.Resolve(args.Token, args.Success);
+                if (!args.Success) Messages.Message("Phinix_bounty_postFailed".Translate(args.FailureMessage), MessageTypeDefOf.RejectInput, historical: false);
+            });
+            agora.OnFulfilBountyResponse += (sender, args) => RunOnMainThread(() =>
+            {
+                BountyEscrow.Resolve(args.Token, args.Success);
+                if (!args.Success) Messages.Message("Phinix_bounty_fulfilFailed".Translate(args.FailureMessage), MessageTypeDefOf.RejectInput, historical: false);
+            });
+
+            // Items arriving from a bounty: what we asked for, a reward, or a reward coming back
+            agora.OnBountyDelivery += (sender, args) => RunOnMainThread(() => receiveBountyDelivery(args));
+
             agora.OnPostListingResponse += (sender, args) =>
             {
                 if (args.Success) return;
@@ -815,6 +849,36 @@ namespace PhinixClient
                 AuthType = authType,
                 CredentialsCallback = callback
             });
+        }
+
+        /// <summary>
+        /// Drops in items delivered from a bounty and sends a letter saying why they arrived.
+        /// Must run on the main thread.
+        /// </summary>
+        /// <param name="delivery">The delivery from the server</param>
+        private void receiveBountyDelivery(Agora.BountyDeliveryPacket delivery)
+        {
+            // Build the items, skipping any this game doesn't have (the same way completed trades do)
+            Thing[] things = delivery.Items
+                .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown)
+                .Where(thing => thing.def.defName != "UnknownItem")
+                .ToArray();
+            LookTargets dropSpot = dropPods(things);
+
+            if (!TryGetDisplayName(delivery.OtherPartyUuid, out string otherName)) otherName = "???";
+            otherName = TextHelper.StripRichText(otherName);
+
+            // Each reason gets its own letter. The keys are e.g. Phinix_bounty_delivery_Fulfilled_label, built from
+            // the enum's name, so adding a reason later only needs two new lines in English.xml
+            string reasonName = delivery.Reason.ToString();
+            bool good = delivery.Reason == Agora.BountyDeliveryReason.Fulfilled || delivery.Reason == Agora.BountyDeliveryReason.Reward;
+            LetterDef letterDef = DefDatabase<LetterDef>.GetNamed(good ? "TradeAccepted" : "TradeCancelled");
+            Find.LetterStack.ReceiveLetter(
+                ("Phinix_bounty_delivery_" + reasonName + "_label").Translate(),
+                ("Phinix_bounty_delivery_" + reasonName + "_description").Translate(otherName),
+                letterDef,
+                dropSpot
+            );
         }
 
         /// <summary>
