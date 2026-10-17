@@ -102,6 +102,22 @@ namespace Agora
         /// <param name="note">Short message to go with the listing</param>
         public void PostListing(ListingType type, IEnumerable<ProtoThing> items, string note)
         {
+            if (!authenticator.Authenticated) return;
+            if (!userManager.LoggedIn) return;
+            
+            Listing listing = new Listing { Type = type, Note = note ?? "" };
+            listing.Items.AddRange(items);
+            PostListingPacket packet = new PostListingPacket
+            {
+                SessionId = authenticator.SessionId,
+                Uuid = userManager.Uuid,
+                Listing = listing
+            };
+
+            Any packedPacket = ProtobufPacketHelper.Pack(packet);
+            netClient.Send(MODULE_NAME, packedPacket.ToByteArray());
+
+
             // TODO (yours): fill this in. ClientChat.Send does almost the same steps.
             //
             // 1. Stop (return) if we aren't authenticated or logged in:
@@ -127,6 +143,22 @@ namespace Agora
         /// <param name="listingId">ID of the listing to remove</param>
         public void RemoveListing(string listingId)
         {
+            if (!authenticator.Authenticated || !userManager.LoggedIn)
+            {
+                return;
+            }
+            
+            RemoveListingPacket packet = new RemoveListingPacket
+            {
+                SessionId = authenticator.SessionId,
+                Uuid = userManager.Uuid,
+                ListingId = listingId
+            };
+            
+            Any packedPacket = ProtobufPacketHelper.Pack(packet);
+            netClient.Send(MODULE_NAME, packedPacket.ToByteArray());
+            
+            
             // TODO (yours): fill this in. Same as PostListing, but simpler:
             //
             // 1. Stop if we aren't authenticated or logged in
