@@ -1,0 +1,7 @@
+﻿syntax = "proto3";
+package Agora;
+import "Packets/Listing.proto";
+
+message SyncListingsPacket {
+  repeated Listing Listings = 1;
+}

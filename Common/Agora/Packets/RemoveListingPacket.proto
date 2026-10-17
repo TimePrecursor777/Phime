@@ -1,0 +1,8 @@
+﻿syntax = "proto3";
+package Agora;
+
+message RemoveListingPacket {
+  string SessionId = 1;
+  string Uuid = 2;
+  string ListingId = 3;
+}

@@ -1,0 +1,8 @@
+﻿syntax = "proto3";
+package Agora;
+
+message PostListingResponsePacket {
+  bool Success = 1;
+  string ListingId = 2;
+  string FailureMessage = 3;
+}

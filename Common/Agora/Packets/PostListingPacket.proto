@@ -1,0 +1,9 @@
+﻿syntax = "proto3";
+package Agora;
+import "Packets/Listing.proto";
+
+message PostListingPacket {
+  string SessionId = 1;
+  string Uuid = 2;
+  Listing Listing = 3;
+}
