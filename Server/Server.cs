@@ -54,7 +54,7 @@ namespace PhinixServer
             UserManager = new ServerUserManager(Connections, Authenticator, Config.MaxDisplayNameLength);
             Chat = new ServerChat(Connections, Authenticator, UserManager, Config.ChatHistoryLength, Config.ChatRateLimitMessages, Config.ChatRateLimitSeconds);
             Trading = new ServerTrading(Connections, Authenticator, UserManager);
-            Agora = new ServerAgora(Connections, Authenticator, UserManager);
+            Agora = new ServerAgora(Connections, Authenticator, UserManager, Config.MarketMaxListingsPerUser, Config.MarketPostRateLimitPosts, Config.MarketPostRateLimitSeconds);
 
             // Add handler for ILoggable modules
             Authenticator.OnLogEntry += ILoggableHandler;
@@ -66,7 +66,7 @@ namespace PhinixServer
             // Load saved data
             Authenticator.Load(Config.CredentialDatabasePath);
             UserManager.Load(Config.UserDatabasePath);
-            Chat.Load(Config.ChatHistoryPath);
+            if (Config.SaveChatHistory) Chat.Load(Config.ChatHistoryPath);
             Trading.Load(Config.TradeDatabasePath);
 
             // Set up the save timer
@@ -130,7 +130,7 @@ namespace PhinixServer
             // Save module states
             Authenticator.Save(Config.CredentialDatabasePath);
             UserManager.Save(Config.UserDatabasePath);
-            Chat.Save(Config.ChatHistoryPath);
+            if (Config.SaveChatHistory) Chat.Save(Config.ChatHistoryPath);
             Trading.Save(Config.TradeDatabasePath);
 
             // Save config too
@@ -161,7 +161,7 @@ namespace PhinixServer
             // Save module states
             Authenticator.Save(Config.CredentialDatabasePath);
             UserManager.Save(Config.UserDatabasePath);
-            Chat.Save(Config.ChatHistoryPath);
+            if (Config.SaveChatHistory) Chat.Save(Config.ChatHistoryPath);
             Trading.Save(Config.TradeDatabasePath);
 
             // Save the config

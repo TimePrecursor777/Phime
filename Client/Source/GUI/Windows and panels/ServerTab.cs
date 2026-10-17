@@ -75,7 +75,10 @@ namespace PhinixClient
             Rect rightColumnRect = usableRect.RightPartPixels(RIGHT_COLUMN_WIDTH);
             Rect chatRect = usableRect.LeftPartPixels(usableRect.width - (rightColumnRect.width + DEFAULT_SPACING));
 
-            // Tabs
+            // Tabs, with a "New" count on any that have something the player hasn't seen
+            tabList[0].label = tabLabel("Phinix_tabs_chat", activeTab == 0 ? 0 : Instance.NewChatCount);
+            tabList[1].label = tabLabel("Phinix_tabs_trades", activeTab == 1 ? 0 : Instance.NewTradeCount);
+            tabList[2].label = tabLabel("Phinix_tabs_market", activeTab == 2 ? 0 : Instance.NewListingCount);
             TabDrawer.DrawTabs(usableRect, tabList, 200f);
 
             switch (activeTab)
@@ -86,14 +89,30 @@ namespace PhinixClient
                     break;
                 case 1: // Trades tab
                     GenerateTrades(usableRect); // Trades
+                    if (Instance.Online) Instance.MarkTradesSeen();
                     break;
                 case 2: // Market tab
                     GenerateMarket(usableRect); // Market board
+                    if (Instance.Online) Instance.MarkListingsSeen();
                     break;
                 default:
                     Widgets.DrawMenuSection(usableRect); // Placeholder
                     break;
             }
+        }
+
+        /// <summary>
+        /// Builds a tab's label, adding "New (n)" when there's something unseen. Counts above 99 show as "99+".
+        /// </summary>
+        /// <param name="key">Translation key of the tab's name</param>
+        /// <param name="newCount">Number of unseen things</param>
+        /// <returns>Label to show on the tab</returns>
+        private static string tabLabel(string key, int newCount)
+        {
+            if (newCount <= 0 || !Instance.Online) return key.Translate();
+
+            string countText = newCount > 99 ? "99+" : newCount.ToString();
+            return "Phinix_tabs_newCount".Translate(key.Translate(), countText);
         }
 
         /// <summary>

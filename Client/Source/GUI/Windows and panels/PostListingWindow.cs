@@ -198,6 +198,7 @@ namespace PhinixClient
             Rect noteLabelRect = new Rect(inRect.xMin, noteRect.yMin - ROW_HEIGHT, inRect.width, ROW_HEIGHT);
             Widgets.Label(noteLabelRect, "Phinix_market_noteLabel".Translate());
             note = Widgets.TextField(noteRect, note);
+            if (note.Length > Agora.ServerAgora.MAX_NOTE_LENGTH) note = note.Substring(0, Agora.ServerAgora.MAX_NOTE_LENGTH);
 
             // Chosen items fill whatever space is left in the middle
             Rect chosenRect = new Rect(inRect.xMin, y, inRect.width, noteLabelRect.yMin - DEFAULT_SPACING - y);

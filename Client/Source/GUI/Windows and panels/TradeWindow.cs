@@ -94,6 +94,9 @@ namespace PhinixClient
         {
             this.trade = trade;
 
+            // Opening a trade counts as seeing it, so it drops out of the Trades tab's "New" count
+            Client.Instance.MarkTradeSeen(trade.TradeId);
+
             this.doCloseX = true;
             this.closeOnAccept = false;
             this.closeOnCancel = false;

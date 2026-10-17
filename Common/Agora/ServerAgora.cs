@@ -53,7 +53,22 @@ namespace Agora
         /// <summary>
         /// Limits how many listings each user can post in a short period, to stop spam.
         /// </summary>
-        private RateLimiter postRateLimiter = new RateLimiter(3, TimeSpan.FromMinutes(1));
+        private RateLimiter postRateLimiter;
+
+        /// <summary>
+        /// Most listings one user can have on the board at once.
+        /// </summary>
+        private int maxListingsPerUser;
+
+        /// <summary>
+        /// Most items one listing can hold.
+        /// </summary>
+        public const int MAX_ITEMS_PER_LISTING = 10;
+
+        /// <summary>
+        /// Longest a listing's note can be, in characters.
+        /// </summary>
+        public const int MAX_NOTE_LENGTH = 200;
 
         /// <summary>
         /// Initialises a new <see cref="ServerAgora"/> instance.
@@ -61,11 +76,16 @@ namespace Agora
         /// <param name="netServer"><see cref="NetServer"/> to receive packets from</param>
         /// <param name="authenticator"><see cref="ServerAuthenticator"/> to check sessions with</param>
         /// <param name="userManager"><see cref="ServerUserManager"/> to check logins with</param>
-        public ServerAgora(NetServer netServer, ServerAuthenticator authenticator, ServerUserManager userManager)
+        /// <param name="maxListingsPerUser">Most listings one user can have on the board at once</param>
+        /// <param name="postRateLimitPosts">Most listings one user can post within <paramref name="postRateLimitSeconds"/></param>
+        /// <param name="postRateLimitSeconds">Length of the rate limit window in seconds</param>
+        public ServerAgora(NetServer netServer, ServerAuthenticator authenticator, ServerUserManager userManager, int maxListingsPerUser = 3, int postRateLimitPosts = 2, int postRateLimitSeconds = 60)
         {
             this.netServer = netServer;
             this.authenticator = authenticator;
             this.userManager = userManager;
+            this.maxListingsPerUser = maxListingsPerUser;
+            this.postRateLimiter = new RateLimiter(postRateLimitPosts, TimeSpan.FromSeconds(postRateLimitSeconds));
 
             // Ask to be handed every packet addressed to this module, and to be told when someone logs in
             netServer.RegisterPacketHandler(MODULE_NAME, packetHandler);
@@ -135,11 +155,27 @@ namespace Agora
                 sendPostListingResponse(connectionId, false, "", "No listing was sent");
                 return;
             }
+            if (packet.Listing.Items.Count == 0 || packet.Listing.Items.Count > MAX_ITEMS_PER_LISTING)
+            {
+                sendPostListingResponse(connectionId, false, "", string.Format("A listing needs between 1 and {0} items", MAX_ITEMS_PER_LISTING));
+                return;
+            }
+            lock (listingsLock)
+            {
+                // Count how many listings this user already has up, like sum(1 for l in listings.values() if l.PosterUuid == uuid)
+                int alreadyPosted = listings.Values.Count(existing => existing.PosterUuid == packet.Uuid);
+                if (alreadyPosted >= maxListingsPerUser)
+                {
+                    sendPostListingResponse(connectionId, false, "", string.Format("You can only have {0} listings up at once. Remove one first", maxListingsPerUser));
+                    return;
+                }
+            }
             Listing listing = packet.Listing.Clone();                        // make a copy called "listing"
             listing.ListingId = Guid.NewGuid().ToString();                   // replace its ID with a new random one
             listing.PosterUuid = packet.Uuid;                                // replace the poster with who really sent it
             listing.PostedTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();  // replace the time with the server's clock
             listing.Note = TextHelper.SanitiseRichText(listing.Note);        // replace the note with a cleaned version
+            if (listing.Note.Length > MAX_NOTE_LENGTH) listing.Note = listing.Note.Substring(0, MAX_NOTE_LENGTH); // and cut it short if it's too long
             lock (listingsLock)
             {
                 listings.Add(listing.ListingId, listing);

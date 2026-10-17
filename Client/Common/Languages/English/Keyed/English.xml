@@ -3,6 +3,7 @@
     <Phinix_tabs_chat>Chat</Phinix_tabs_chat>
     <Phinix_tabs_trades>Trades</Phinix_tabs_trades>
     <Phinix_tabs_market>Market</Phinix_tabs_market>
+    <Phinix_tabs_newCount>{0} · New ({1})</Phinix_tabs_newCount>
 
     <Phinix_chat_settingsButton>Settings</Phinix_chat_settingsButton>
     <Phinix_chat_sendButton>Send</Phinix_chat_sendButton>

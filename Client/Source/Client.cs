@@ -74,6 +74,48 @@ namespace PhinixClient
         public event EventHandler OnListingsChanged;
         public event EventHandler<PostListingResponsePacket> OnPostListingResponse;
 
+        // "New" counts for the Phinix window's tabs. These sets remember which trades and listings the player has
+        // already seen, like a Python set(). Only the UI uses them, so they're always on the main thread and need no lock
+        private readonly HashSet<string> seenTradeIds = new HashSet<string>();
+        private readonly HashSet<string> seenListingIds = new HashSet<string>();
+
+        /// <summary>
+        /// Number of chat messages that arrived since the chat tab was last open.
+        /// </summary>
+        public int NewChatCount => Settings.ShowBlockedUnreadMessageCount ? UnreadMessages : UnreadMessagesExcludingBlocked;
+
+        /// <summary>
+        /// Number of trades that haven't been looked at yet.
+        /// </summary>
+        public int NewTradeCount => getVisibleTrades().Count(trade => !seenTradeIds.Contains(trade.TradeId));
+
+        /// <summary>
+        /// Number of other people's listings posted since the market tab was last open.
+        /// </summary>
+        public int NewListingCount => GetListings().Count(listing => listing.PosterUuid != Uuid && !seenListingIds.Contains(listing.ListingId));
+
+        /// <summary>
+        /// Marks every current trade as seen, clearing the Trades tab's "New" count.
+        /// </summary>
+        public void MarkTradesSeen() => seenTradeIds.UnionWith(getVisibleTrades().Select(trade => trade.TradeId));
+
+        /// <summary>
+        /// Marks one trade as seen, e.g. when its window is opened.
+        /// </summary>
+        /// <param name="tradeId">ID of the trade</param>
+        public void MarkTradeSeen(string tradeId) => seenTradeIds.Add(tradeId);
+
+        /// <summary>
+        /// Marks every listing on the board as seen, clearing the Market tab's "New" count.
+        /// </summary>
+        public void MarkListingsSeen() => seenListingIds.UnionWith(GetListings().Select(listing => listing.ListingId));
+
+        /// <summary>
+        /// Gets active trades, leaving out blocked users' trades if the player has chosen to hide them.
+        /// </summary>
+        /// <returns>Trades the player can see</returns>
+        private ImmutableTrade[] getVisibleTrades() => Settings.ShowBlockedTrades ? GetTrades() : GetTradesExceptWith(Settings.BlockedUsers);
+
         private ClientTrading trading;
         public void CancelTrade(string tradeId) => trading.CancelTrade(tradeId);
         public string[] GetTradeIds() => trading.GetTradeIds();
@@ -439,8 +481,7 @@ namespace PhinixClient
             trading.OnTradeUpdateFailure += (sender, e) => { OnTradeUpdateFailure?.Invoke(sender, UITradeUpdateEventArgs.FromTradeUpdateEventArgs(e, trading)); };
             trading.OnTradesSynced += (sender, e) => { OnTradesSynced?.Invoke(sender, UITradesSyncedEventArgs.FromTradesSyncedEventArgs(e, trading, userManager)); };
 
-            // Connect to the server set in the config
-            Connect(Settings.ServerAddress, Settings.ServerPort);
+            // We don't connect here, since the game starts on the main menu. Update() connects once a colony is loaded
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -552,6 +593,8 @@ namespace PhinixClient
         /// <seealso cref="Patches.RootPatch.Update"/>
         public void Update()
         {
+            connectOnlyWhileInGame();
+
             lock (soundQueueLock)
             {
                 // Check if we have sounds to play
@@ -592,6 +635,32 @@ namespace PhinixClient
                 {
                     Verse.Log.Error(string.Format("Phinix main thread job failed: {0}", e));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether we've already tried connecting since the player loaded into a game.
+        /// Stops us retrying every frame if the server is down or the player disconnected on purpose.
+        /// </summary>
+        private bool connectAttemptedThisGame = false;
+
+        /// <summary>
+        /// Connects when the player loads into a colony and disconnects when they go back to the main menu, so nobody
+        /// shows as online while they're sitting in the menu.
+        /// </summary>
+        private void connectOnlyWhileInGame()
+        {
+            if (Current.ProgramState == ProgramState.Playing && !connectAttemptedThisGame)
+            {
+                // Just finished loading a colony
+                connectAttemptedThisGame = true;
+                if (!Connected) Connect(Settings.ServerAddress, Settings.ServerPort);
+            }
+            else if (GenScene.InEntryScene && connectAttemptedThisGame)
+            {
+                // Just went back to the main menu
+                connectAttemptedThisGame = false;
+                if (Connected) Disconnect();
             }
         }
 

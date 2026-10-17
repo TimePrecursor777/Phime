@@ -120,13 +120,38 @@ namespace PhinixServer
         /// Maximum number of chat messages a user can send within <see cref="ChatRateLimitSeconds"/> before further messages are refused.
         /// </summary>
         [DataMember(Name = "ChatRateLimitMessages", Order = 16)]
-        public int ChatRateLimitMessages = 5;
+        public int ChatRateLimitMessages = 3;
 
         /// <summary>
         /// Length in seconds of the window used by <see cref="ChatRateLimitMessages"/>.
         /// </summary>
         [DataMember(Name = "ChatRateLimitSeconds", Order = 17)]
         public int ChatRateLimitSeconds = 10;
+
+        /// <summary>
+        /// Whether chat history is saved to disk and loaded again when the server restarts.
+        /// Off by default, so every restart starts with an empty chat.
+        /// </summary>
+        [DataMember(Name = "SaveChatHistory", Order = 18)]
+        public bool SaveChatHistory = false;
+
+        /// <summary>
+        /// Most listings one user can have on the market board at once.
+        /// </summary>
+        [DataMember(Name = "MarketMaxListingsPerUser", Order = 19)]
+        public int MarketMaxListingsPerUser = 3;
+
+        /// <summary>
+        /// Most listings one user can post within <see cref="MarketPostRateLimitSeconds"/>.
+        /// </summary>
+        [DataMember(Name = "MarketPostRateLimitPosts", Order = 20)]
+        public int MarketPostRateLimitPosts = 2;
+
+        /// <summary>
+        /// Length in seconds of the window used by <see cref="MarketPostRateLimitPosts"/>.
+        /// </summary>
+        [DataMember(Name = "MarketPostRateLimitSeconds", Order = 21)]
+        public int MarketPostRateLimitSeconds = 60;
 
         /// <summary>
         /// Loads a <see cref="Config"/> object from the given file path. Will return a default <see cref="Config"/> if the file does not exist.
@@ -196,7 +221,11 @@ namespace PhinixServer
             // Ignore AuthType since it always has a value
             if (MaxDisplayNameLength < 1) MaxDisplayNameLength = 100;
             if (ChatHistoryLength < 0) ChatHistoryLength = 40;
-            if (ChatRateLimitMessages < 1) ChatRateLimitMessages = 5;
+            if (ChatRateLimitMessages < 1) ChatRateLimitMessages = 3;
+            // Ignore SaveChatHistory since a missing value means false, which is the default anyway
+            if (MarketMaxListingsPerUser < 1) MarketMaxListingsPerUser = 3;
+            if (MarketPostRateLimitPosts < 1) MarketPostRateLimitPosts = 2;
+            if (MarketPostRateLimitSeconds < 1) MarketPostRateLimitSeconds = 60;
             if (ChatRateLimitSeconds < 1) ChatRateLimitSeconds = 10;
         }
 
