@@ -37,12 +37,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agora.cs" />
     <Compile Include="Packets\compiled\Listing.cs" />
     <Compile Include="Packets\compiled\PostListingPacket.cs" />
     <Compile Include="Packets\compiled\PostListingResponsePacket.cs" />
     <Compile Include="Packets\compiled\RemoveListingPacket.cs" />
     <Compile Include="Packets\compiled\SyncListingsPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerAgora.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Packets\Listing.proto" />
