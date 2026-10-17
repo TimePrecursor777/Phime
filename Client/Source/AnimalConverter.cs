@@ -71,22 +71,7 @@ namespace PhinixClient
             }
 
             // Record every health condition along with the body part it's on
-            foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
-            {
-                ProtoHediff protoHediff = new ProtoHediff
-                {
-                    DefName = hediff.def.defName,
-                    Severity = hediff.Severity
-                };
-
-                if (hediff.Part != null)
-                {
-                    protoHediff.BodyPartDefName = hediff.Part.def.defName;
-                    protoHediff.BodyPartIndex = getBodyPartIndex(pawn, hediff.Part);
-                }
-
-                protoAnimal.Hediffs.Add(protoHediff);
-            }
+            protoAnimal.Hediffs.AddRange(HediffConverter.ConvertHediffsFromVerse(pawn));
 
             // Note who the animal was bonded to, if anyone
             // "?." stops and gives null if the thing on its left is null, like Python's "x and x.y"
@@ -148,7 +133,7 @@ namespace PhinixClient
             }
 
             applyTraining(pawn, protoAnimal);
-            applyHediffs(pawn, protoAnimal);
+            HediffConverter.ApplyHediffs(pawn, protoAnimal.Hediffs);
 
             // The bonded colonist stays behind, so there's nobody to link the bond to.
             // BondedPawnName is kept in the proto so the trade window can mention it later.
@@ -188,78 +173,6 @@ namespace PhinixClient
                     pawn.training.SetWantedRecursive(trainableDef, true);
                 }
             }
-        }
-
-        /// <summary>
-        /// Gives the animal the same health conditions it had before the trade.
-        /// </summary>
-        /// <param name="pawn">Newly-generated animal</param>
-        /// <param name="protoAnimal">Animal data from the trade</param>
-        private static void applyHediffs(Pawn pawn, ProtoAnimal protoAnimal)
-        {
-            // Clear anything the generator added so we end up with exactly what was sent
-            pawn.health.RemoveAllHediffs();
-
-            foreach (ProtoHediff protoHediff in protoAnimal.Hediffs)
-            {
-                HediffDef hediffDef = DefDatabase<HediffDef>.GetNamedSilentFail(protoHediff.DefName);
-                if (hediffDef == null)
-                {
-                    Client.Instance.Log(new LogEventArgs(string.Format("Skipping unknown hediff '{0}' on traded animal", protoHediff.DefName), LogLevel.WARNING));
-                    continue;
-                }
-
-                // Find the body part, if the condition is on one
-                BodyPartRecord part = null;
-                if (!string.IsNullOrEmpty(protoHediff.BodyPartDefName))
-                {
-                    part = findBodyPart(pawn, protoHediff.BodyPartDefName, protoHediff.BodyPartIndex);
-
-                    // Skip conditions on parts this animal doesn't have, or that are already gone
-                    // (e.g. a scar on a leg that an earlier "missing leg" entry already removed)
-                    if (part == null || pawn.health.hediffSet.PartIsMissing(part)) continue;
-                }
-
-                // One bad condition shouldn't stop the whole animal from arriving
-                try
-                {
-                    Hediff hediff = HediffMaker.MakeHediff(hediffDef, pawn, part);
-                    hediff.Severity = protoHediff.Severity;
-                    pawn.health.AddHediff(hediff, part);
-                }
-                catch (Exception e)
-                {
-                    Client.Instance.Log(new LogEventArgs(string.Format("Failed to add hediff '{0}' to traded animal: {1}", protoHediff.DefName, e.Message), LogLevel.WARNING));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Works out which of the body parts sharing a def this is, e.g. 0 for the first leg and 1 for the second.
-        /// </summary>
-        /// <param name="pawn">Animal the part belongs to</param>
-        /// <param name="part">Body part to find the index of</param>
-        /// <returns>Index among parts with the same def</returns>
-        private static int getBodyPartIndex(Pawn pawn, BodyPartRecord part)
-        {
-            return pawn.RaceProps.body.AllParts
-                .Where(p => p.def == part.def)
-                .ToList()
-                .IndexOf(part);
-        }
-
-        /// <summary>
-        /// Finds a body part by def name and index, the reverse of <see cref="getBodyPartIndex"/>.
-        /// </summary>
-        /// <param name="pawn">Animal to search</param>
-        /// <param name="defName">Body part def name</param>
-        /// <param name="index">Index among parts with the same def</param>
-        /// <returns>Matching body part, or null if there isn't one</returns>
-        private static BodyPartRecord findBodyPart(Pawn pawn, string defName, int index)
-        {
-            return pawn.RaceProps.body.AllParts
-                .Where(p => p.def.defName == defName)
-                .ElementAtOrDefault(index);
         }
     }
 }

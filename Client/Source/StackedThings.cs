@@ -11,16 +11,16 @@ namespace PhinixClient
         public List<Thing> Things;
 
         /// <summary>
-        /// Set when this row only displays an animal on offer, without a real animal behind it.
-        /// Building a real animal just to draw its name would mean generating a whole pawn every time the trade updates.
+        /// Set when this row only displays an animal or colonist on offer, without a real pawn behind it.
+        /// Building a real pawn just to draw its name would mean generating a whole pawn every time the trade updates.
         /// </summary>
-        private ProtoAnimal displayAnimal;
+        private ProtoThing displayPawn;
 
         // "=>" makes a read-only property that is recalculated each time it's read, a bit like Python's @property
-        public int Count => displayAnimal != null ? 1 : Things.Sum(thing => thing.stackCount);
+        public int Count => displayPawn != null ? 1 : Things.Sum(thing => thing.stackCount);
 
-        public string Label => displayAnimal != null ? getAnimalLabel(displayAnimal) : Things.First().LabelCapNoCount;
-        public ThingDef ThingDef => displayAnimal != null ? DefDatabase<ThingDef>.GetNamedSilentFail(displayAnimal.DefName) : Things.First()?.def;
+        public string Label => displayPawn != null ? getPawnLabel(displayPawn) : Things.First().LabelCapNoCount;
+        public ThingDef ThingDef => displayPawn != null ? DefDatabase<ThingDef>.GetNamedSilentFail(getPawnDefName(displayPawn)) : Things.First()?.def;
         // FirstOrDefault gives null on an empty list instead of throwing, which display-only rows need
         public ThingDef StuffDef => Things.FirstOrDefault()?.Stuff;
         public ThingStyleDef StyleDef => Things.FirstOrDefault()?.StyleDef;
@@ -33,31 +33,55 @@ namespace PhinixClient
         }
 
         /// <summary>
-        /// Creates a display-only row for an animal on offer.
+        /// Whether the given offered thing is a pawn (an animal or colonist) that gets a display-only row.
         /// </summary>
-        /// <param name="protoAnimal">Animal to display</param>
+        /// <param name="protoThing">Offered thing</param>
+        /// <returns>Whether it is a pawn</returns>
+        public static bool IsDisplayPawn(ProtoThing protoThing) => protoThing.Animal != null || protoThing.Colonist != null;
+
+        /// <summary>
+        /// Creates a display-only row for an animal or colonist on offer.
+        /// </summary>
+        /// <param name="protoThing">Pawn to display</param>
         /// <returns>Row with no real things in it</returns>
-        public static StackedThings ForDisplayAnimal(ProtoAnimal protoAnimal)
+        public static StackedThings ForDisplayPawn(ProtoThing protoThing)
         {
             // "new X(...) { field = value }" sets fields right after construction, like keyword arguments
-            return new StackedThings(Enumerable.Empty<Thing>()) { displayAnimal = protoAnimal };
+            return new StackedThings(Enumerable.Empty<Thing>()) { displayPawn = protoThing };
         }
 
         /// <summary>
-        /// Builds a label like "Bessie (muffalo)" or just "Muffalo" for an unnamed animal.
+        /// Gets the race def name of an animal or colonist on offer.
         /// </summary>
-        /// <param name="protoAnimal">Animal to label</param>
-        /// <returns>Label text</returns>
-        private static string getAnimalLabel(ProtoAnimal protoAnimal)
-        {
-            // Fall back to the raw def name if the receiver doesn't have this species (e.g. a missing mod)
-            ThingDef raceDef = DefDatabase<ThingDef>.GetNamedSilentFail(protoAnimal.DefName);
-            string speciesLabel = raceDef != null ? raceDef.label : protoAnimal.DefName;
+        /// <param name="protoThing">Pawn on offer</param>
+        /// <returns>Race def name</returns>
+        private static string getPawnDefName(ProtoThing protoThing) => protoThing.Animal != null ? protoThing.Animal.DefName : protoThing.Colonist.DefName;
 
-            // $"..." is C#'s version of a Python f-string
-            return string.IsNullOrEmpty(protoAnimal.CustomName)
-                ? speciesLabel.CapitalizeFirst()
-                : $"{protoAnimal.CustomName} ({speciesLabel})";
+        /// <summary>
+        /// Builds a label like "Bessie (muffalo)" for an animal, or "Engie (human)" for a colonist.
+        /// </summary>
+        /// <param name="protoThing">Pawn to label</param>
+        /// <returns>Label text</returns>
+        private static string getPawnLabel(ProtoThing protoThing)
+        {
+            // Fall back to the raw def name if the receiver doesn't have this race (e.g. a missing mod)
+            string defName = getPawnDefName(protoThing);
+            ThingDef raceDef = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+            string raceLabel = raceDef != null ? raceDef.label : defName;
+
+            if (protoThing.Colonist != null)
+            {
+                ProtoColonist colonist = protoThing.Colonist;
+                string colonistName = !string.IsNullOrEmpty(colonist.NickName) ? colonist.NickName : colonist.FirstName;
+
+                // $"..." is C#'s version of a Python f-string
+                return $"{colonistName} ({raceLabel})";
+            }
+
+            ProtoAnimal animal = protoThing.Animal;
+            return string.IsNullOrEmpty(animal.CustomName)
+                ? raceLabel.CapitalizeFirst()
+                : $"{animal.CustomName} ({raceLabel})";
         }
 
         /// <summary>

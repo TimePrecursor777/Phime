@@ -20,4 +20,85 @@ message ProtoThing
 
     // Set when this thing is a tame animal, empty otherwise
     ProtoAnimal Animal = 7;
+
+    // Set when this thing is a colonist, empty otherwise
+    ProtoColonist Colonist = 8;
+};
+
+// A colonist being traded. Carried inside ProtoThing.Colonist.
+// This lives in Thing.proto rather than its own file because it holds ProtoThings (their gear) and ProtoThing
+// holds it, and protobuf files aren't allowed to import each other in a circle.
+message ProtoColonist
+{
+    // Identification
+    string DefName = 1;                     // Race ThingDef name ("Human", or a modded race)
+    string KindDefName = 2;                 // PawnKindDef name
+    string FirstName = 3;
+    string NickName = 4;
+    string LastName = 5;
+
+    // Biology & age
+    int64 BiologicalAgeTicks = 6;
+    int64 ChronologicalAgeTicks = 7;
+    bool IsFemale = 8;
+    int32 DevelopmentalStage = 9;           // RimWorld's DevelopmentalStage as a number (baby, child, adult)
+
+    // Story
+    string ChildhoodDefName = 10;           // BackstoryDef names, empty if they don't have one
+    string AdulthoodDefName = 11;
+    repeated ProtoTrait Traits = 12;        // Only traits they chose or were born with; gene traits come back with the genes
+    repeated ProtoSkill Skills = 13;
+
+    // Health conditions, including implants, scars and missing parts
+    repeated ProtoHediff Hediffs = 14;
+
+    // Genes (Biotech)
+    string XenotypeDefName = 15;            // Empty for a custom xenotype
+    string CustomXenotypeName = 16;         // Name of a custom xenotype, empty otherwise
+    repeated string Endogenes = 17;         // GeneDef names they were born with
+    repeated string Xenogenes = 18;         // GeneDef names from their xenotype or an implanter
+
+    // Looks
+    ProtoAppearance Appearance = 19;
+
+    // Gear they take with them
+    repeated ProtoThing Apparel = 20;       // Worn clothes and armour
+    repeated ProtoThing Equipment = 21;     // Held weapon
+    repeated ProtoThing Inventory = 22;     // Things in their pockets (e.g. packed meals, medicine)
+};
+
+message ProtoTrait
+{
+    string DefName = 1;
+    int32 Degree = 2;                       // Which version of the trait, e.g. "Optimist" vs "Pessimist" share a def
+};
+
+message ProtoSkill
+{
+    string DefName = 1;
+    int32 Level = 2;
+    float XpSinceLastLevel = 3;             // Progress towards the next level
+    int32 Passion = 4;                      // 0 none, 1 minor, 2 major (or a modded passion)
+};
+
+message ProtoAppearance
+{
+    string BodyTypeDefName = 1;
+    string HeadTypeDefName = 2;
+    string HairDefName = 3;
+    string BeardDefName = 4;
+    string FaceTattooDefName = 5;
+    string BodyTattooDefName = 6;
+    string FurDefName = 7;
+    string FavoriteColorDefName = 8;
+    ProtoColor HairColor = 9;
+    ProtoColor SkinColorOverride = 10;      // Only set when something overrides the skin colour from genes
+};
+
+message ProtoColor
+{
+    float R = 1;
+    float G = 2;
+    float B = 3;
+    float A = 4;
 };
