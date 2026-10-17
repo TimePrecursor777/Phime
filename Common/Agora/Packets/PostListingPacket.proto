@@ -5,5 +5,5 @@ import "Packets/Listing.proto";
 message PostListingPacket {
   string SessionId = 1;
   string Uuid = 2;
-  repeated Listing Listing = 3;
+  Listing Listing = 3;
 }

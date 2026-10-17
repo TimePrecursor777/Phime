@@ -1,6 +1,5 @@
 ﻿syntax = "proto3";
 package Agora;
-import "Packets/Listing.proto";
 
 message RemoveListingPacket {
   string SessionId = 1;
