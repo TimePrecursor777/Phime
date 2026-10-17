@@ -183,23 +183,6 @@ namespace Agora
 
             sendPostListingResponse(connectionId, true, listing.ListingId, "");
             broadcastSyncListings();
-            // TODO (yours): fill this in. ServerChat.chatMessagePacketHandler does almost the same steps.
-            //
-            // 1. Refuse it if the session isn't authenticated:   authenticator.IsAuthenticated(connectionId, packet.SessionId)
-            // 2. Refuse it if the user isn't logged in:           userManager.IsLoggedIn(connectionId, packet.Uuid)
-            // 3. Refuse it if they're posting too fast:           postRateLimiter.TryAct(packet.Uuid)
-            //    For each refusal, call sendPostListingResponse(connectionId, false, "", "some reason") and then return
-            //
-            // 4. Don't trust anything the client filled in that the server should decide. Copy the listing and overwrite:
-            //        Listing listing = packet.Listing.Clone();
-            //        listing.ListingId = Guid.NewGuid().ToString();                  // a fresh unique ID
-            //        listing.PosterUuid = packet.Uuid;                                // who actually sent it
-            //        listing.PostedTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();  // the server's clock
-            //        listing.Note = TextHelper.SanitiseRichText(listing.Note);        // strip sneaky formatting
-            //
-            // 5. Add it to the board inside the lock:             lock (listingsLock) { listings.Add(listing.ListingId, listing); }
-            // 6. Tell the poster it worked:                       sendPostListingResponse(connectionId, true, listing.ListingId, "")
-            // 7. Send everyone the updated board:                 broadcastSyncListings()
         }
 
         /// <summary>
@@ -230,16 +213,6 @@ namespace Agora
             }
 
             broadcastSyncListings();
-            
-            // TODO (yours): fill this in.
-            //
-            // 1. Ignore it (just return) if the session isn't authenticated or the user isn't logged in, same checks as above
-            // 2. Inside lock (listingsLock):
-            //      - look the listing up:   listings.TryGetValue(packet.ListingId, out Listing listing)
-            //      - ignore it if it doesn't exist, or if listing.PosterUuid != packet.Uuid
-            //        (that second check is what stops people deleting other players' listings)
-            //      - otherwise remove it:   listings.Remove(packet.ListingId);
-            // 3. Send everyone the updated board:   broadcastSyncListings()
         }
 
         /// <summary>

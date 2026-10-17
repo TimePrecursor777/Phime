@@ -116,25 +116,6 @@ namespace Agora
 
             Any packedPacket = ProtobufPacketHelper.Pack(packet);
             netClient.Send(MODULE_NAME, packedPacket.ToByteArray());
-
-
-            // TODO (yours): fill this in. ClientChat.Send does almost the same steps.
-            //
-            // 1. Stop (return) if we aren't authenticated or logged in:
-            //        if (!authenticator.Authenticated) return;
-            //        if (!userManager.LoggedIn) return;
-            //
-            // 2. Build the listing. Only fill in what the player chooses; the server sets the ID, poster and time.
-            //        Listing listing = new Listing { Type = type, Note = note ?? "" };
-            //        listing.Items.AddRange(items);
-            //    ("?? """ swaps a null note for an empty string, since protobuf strings can't be null)
-            //
-            // 3. Wrap it in a PostListingPacket with SessionId = authenticator.SessionId, Uuid = userManager.Uuid,
-            //    and Listing = listing. Same "new X { A = ..., B = ... }" shape as step 2.
-            //
-            // 4. Pack and send it, exactly like the last two lines of ClientChat.Send:
-            //        Any packedPacket = ProtobufPacketHelper.Pack(packet);
-            //        netClient.Send(MODULE_NAME, packedPacket.ToByteArray());
         }
 
         /// <summary>
@@ -157,13 +138,6 @@ namespace Agora
             
             Any packedPacket = ProtobufPacketHelper.Pack(packet);
             netClient.Send(MODULE_NAME, packedPacket.ToByteArray());
-            
-            
-            // TODO (yours): fill this in. Same as PostListing, but simpler:
-            //
-            // 1. Stop if we aren't authenticated or logged in
-            // 2. Build a RemoveListingPacket with SessionId, Uuid and ListingId = listingId
-            // 3. Pack and send it
         }
 
         /// <summary>

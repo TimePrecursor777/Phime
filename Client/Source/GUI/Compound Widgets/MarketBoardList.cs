@@ -121,19 +121,6 @@ namespace PhinixClient.GUI
                     Client.Instance.CreateTrade(listing.PosterUuid);
                 }
             }
-            
-            // TODO (yours): draw the button on the right.
-            //
-            // If this listing is ours (listing.PosterUuid == Client.Instance.Uuid), draw a "Remove" button that calls
-            // Client.Instance.RemoveListing(listing.ListingId).
-            // Otherwise draw a "Trade" button that calls Client.Instance.CreateTrade(listing.PosterUuid).
-            //
-            // A button is drawn and checked for clicks in one go, like TradeList's Open button:
-            //     if (Widgets.ButtonText(buttonRect, "Phinix_market_removeButton".Translate()))
-            //     {
-            //         ... what to do when clicked ...
-            //     }
-            // The Trade button's label key is "Phinix_market_tradeButton".
         }
 
         /// <summary>
@@ -144,15 +131,6 @@ namespace PhinixClient.GUI
         private static string describeItems(Listing listing)
         {
             return string.Join(", ", listing.Items.Select(item => item.StackCount + "x " + itemLabel(item)));
-            // TODO (yours): build the line of text. In Python this would be:
-            //     ", ".join(f"{item.StackCount}x {label(item)}" for item in listing.Items)
-            //
-            // C# spells it like this:
-            //     return string.Join(", ", listing.Items.Select(item => item.StackCount + "x " + itemLabel(item)));
-            //
-            // "item => ..." is C#'s lambda, the same as Python's "lambda item: ...".
-            // ".Select(...)" is like map(), running the lambda on every item.
-            // itemLabel is written for you just below.
         }
 
         /// <summary>
