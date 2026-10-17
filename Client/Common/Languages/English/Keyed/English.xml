@@ -96,6 +96,7 @@
     <Phinix_market_searchLabel>Find items to add:</Phinix_market_searchLabel>
     <Phinix_market_typeToSearch>Type at least 2 letters to search.</Phinix_market_typeToSearch>
     <Phinix_market_addButton>Add</Phinix_market_addButton>
+    <Phinix_market_owned>{0} owned</Phinix_market_owned>
     <Phinix_market_nothingAdded>Add some items from the search above.</Phinix_market_nothingAdded>
     <Phinix_market_noteLabel>Note (optional):</Phinix_market_noteLabel>
     <Phinix_market_postButton>Post</Phinix_market_postButton>

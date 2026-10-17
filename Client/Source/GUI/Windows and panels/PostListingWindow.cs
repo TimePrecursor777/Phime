@@ -54,6 +54,15 @@ namespace PhinixClient
         /// </summary>
         private static List<ThingDef> allItemDefs;
 
+        /// <summary>
+        /// How many of each item the colony has, used to limit what can be offered.
+        /// Counted once when the window opens.
+        /// </summary>
+        /// <remarks>
+        /// A Dictionary is C#'s dict. This one maps an item def to a count, like <c>{steel: 450, medicine: 12}</c>.
+        /// </remarks>
+        private readonly Dictionary<ThingDef, int> ownedCounts = new Dictionary<ThingDef, int>();
+
         private ListingType type = ListingType.Offering;
         private string note = "";
         private string search = "";
@@ -79,6 +88,70 @@ namespace PhinixClient
                     .OrderBy(def => def.label)
                     .ToList();
             }
+
+            countOwnedItems();
+        }
+
+        /// <summary>
+        /// Fills <see cref="ownedCounts"/> with what the colony has, looking in the same places as the trade window
+        /// so you can't advertise anything you couldn't actually trade.
+        /// </summary>
+        private void countOwnedItems()
+        {
+            IEnumerable<Map> homeMaps = Find.Maps.Where(map => map.IsPlayerHome);
+            IEnumerable<Thing> things;
+            if (Client.Instance.Settings.AllItemsTradable)
+            {
+                things = homeMaps.SelectMany(map => map.listerThings.AllThings);
+            }
+            else
+            {
+                // Only things sitting in stockpiles and shelves
+                things = homeMaps
+                    .SelectMany(map => map.haulDestinationManager.AllGroups)
+                    .SelectMany(group => group.HeldThings);
+            }
+
+            foreach (Thing thing in things)
+            {
+                if (thing.def.category != ThingCategory.Item) continue;
+
+                // Like Python's counts[def] = counts.get(def, 0) + n
+                ownedCounts.TryGetValue(thing.def, out int count);
+                ownedCounts[thing.def] = count + thing.stackCount;
+            }
+        }
+
+        /// <summary>
+        /// Most of an item that can go in this listing: what we own when offering, or anything when asking.
+        /// </summary>
+        /// <param name="def">Item to check</param>
+        /// <returns>Largest allowed count</returns>
+        private int maxCount(ThingDef def)
+        {
+            if (type == ListingType.Wanted) return 99999;
+            return ownedCounts.TryGetValue(def, out int owned) ? owned : 0;
+        }
+
+        /// <summary>
+        /// Switches between Offering and Wanted. Switching to Offering drops anything we don't own and lowers counts
+        /// to what we have.
+        /// </summary>
+        /// <param name="newType">Type to switch to</param>
+        private void setType(ListingType newType)
+        {
+            type = newType;
+            if (type != ListingType.Offering) return;
+
+            chosenItems.RemoveAll(chosen => maxCount(chosen.Def) == 0);
+            foreach (ChosenItem chosen in chosenItems)
+            {
+                if (chosen.Count > maxCount(chosen.Def))
+                {
+                    chosen.Count = maxCount(chosen.Def);
+                    chosen.CountBuffer = chosen.Count.ToString();
+                }
+            }
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -96,11 +169,11 @@ namespace PhinixClient
             float halfWidth = (inRect.width - DEFAULT_SPACING) / 2;
             if (Widgets.RadioButtonLabeled(new Rect(inRect.xMin, y, halfWidth, ROW_HEIGHT), "Phinix_market_offering".Translate(), type == ListingType.Offering))
             {
-                type = ListingType.Offering;
+                setType(ListingType.Offering);
             }
             if (Widgets.RadioButtonLabeled(new Rect(inRect.xMin + halfWidth + DEFAULT_SPACING, y, halfWidth, ROW_HEIGHT), "Phinix_market_wanted".Translate(), type == ListingType.Wanted))
             {
-                type = ListingType.Wanted;
+                setType(ListingType.Wanted);
             }
             y += ROW_HEIGHT + DEFAULT_SPACING;
 
@@ -146,7 +219,9 @@ namespace PhinixClient
                 return;
             }
 
+            // When offering, only show things the colony actually has
             List<ThingDef> results = allItemDefs
+                .Where(def => type == ListingType.Wanted || maxCount(def) > 0)
                 .Where(def => def.label.IndexOf(search, System.StringComparison.OrdinalIgnoreCase) >= 0)
                 .Take(MAX_SEARCH_RESULTS)
                 .ToList();
@@ -163,7 +238,9 @@ namespace PhinixClient
                 Widgets.ThingIcon(rowRect.LeftPartPixels(ROW_HEIGHT).ContractedBy(2f), def);
                 Rect labelRect = new Rect(rowRect.xMin + ROW_HEIGHT + 5f, rowRect.yMin, rowRect.width - ROW_HEIGHT - SMALL_BUTTON_WIDTH - 10f, ROW_HEIGHT);
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(labelRect, def.LabelCap);
+                string label = def.LabelCap;
+                if (type == ListingType.Offering) label += " (" + "Phinix_market_owned".Translate(maxCount(def)) + ")";
+                Widgets.Label(labelRect, label);
                 Text.Anchor = TextAnchor.UpperLeft;
 
                 bool canAdd = chosenItems.Count < MAX_ITEMS && chosenItems.All(chosen => chosen.Def != def);
@@ -210,7 +287,7 @@ namespace PhinixClient
                 Text.Anchor = TextAnchor.UpperLeft;
 
                 // "ref" lets the number box change Count and CountBuffer directly, a bit like passing a mutable box in Python
-                Widgets.TextFieldNumeric(countRect, ref chosen.Count, ref chosen.CountBuffer, 1, 99999);
+                Widgets.TextFieldNumeric(countRect, ref chosen.Count, ref chosen.CountBuffer, 1, maxCount(chosen.Def));
 
                 if (Widgets.ButtonImage(removeRect, TexButton.Delete)) toRemove = chosen;
             }
