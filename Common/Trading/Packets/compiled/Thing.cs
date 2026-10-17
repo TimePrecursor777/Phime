@@ -25,16 +25,47 @@ namespace Trading {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChNQYWNrZXRzL1RoaW5nLnByb3RvEgdUcmFkaW5nGhVQYWNrZXRzL1F1YWxp",
-            "dHkucHJvdG8aGVBhY2tldHMvUHJvdG9BbmltYWwucHJvdG8i0QEKClByb3Rv",
+            "dHkucHJvdG8aGVBhY2tldHMvUHJvdG9BbmltYWwucHJvdG8i+wEKClByb3Rv",
             "VGhpbmcSDwoHRGVmTmFtZRgBIAEoCRISCgpTdGFja0NvdW50GAIgASgFEhQK",
             "DFN0dWZmRGVmTmFtZRgDIAEoCRIhCgdRdWFsaXR5GAQgASgOMhAuVHJhZGlu",
             "Zy5RdWFsaXR5EhEKCUhpdFBvaW50cxgFIAEoBRIsCg9Jbm5lclByb3RvVGhp",
             "bmcYBiABKAsyEy5UcmFkaW5nLlByb3RvVGhpbmcSJAoGQW5pbWFsGAcgASgL",
-            "MhQuVHJhZGluZy5Qcm90b0FuaW1hbGIGcHJvdG8z"));
+            "MhQuVHJhZGluZy5Qcm90b0FuaW1hbBIoCghDb2xvbmlzdBgIIAEoCzIWLlRy",
+            "YWRpbmcuUHJvdG9Db2xvbmlzdCL5BAoNUHJvdG9Db2xvbmlzdBIPCgdEZWZO",
+            "YW1lGAEgASgJEhMKC0tpbmREZWZOYW1lGAIgASgJEhEKCUZpcnN0TmFtZRgD",
+            "IAEoCRIQCghOaWNrTmFtZRgEIAEoCRIQCghMYXN0TmFtZRgFIAEoCRIaChJC",
+            "aW9sb2dpY2FsQWdlVGlja3MYBiABKAMSHQoVQ2hyb25vbG9naWNhbEFnZVRp",
+            "Y2tzGAcgASgDEhAKCElzRmVtYWxlGAggASgIEhoKEkRldmVsb3BtZW50YWxT",
+            "dGFnZRgJIAEoBRIYChBDaGlsZGhvb2REZWZOYW1lGAogASgJEhgKEEFkdWx0",
+            "aG9vZERlZk5hbWUYCyABKAkSIwoGVHJhaXRzGAwgAygLMhMuVHJhZGluZy5Q",
+            "cm90b1RyYWl0EiMKBlNraWxscxgNIAMoCzITLlRyYWRpbmcuUHJvdG9Ta2ls",
+            "bBIlCgdIZWRpZmZzGA4gAygLMhQuVHJhZGluZy5Qcm90b0hlZGlmZhIXCg9Y",
+            "ZW5vdHlwZURlZk5hbWUYDyABKAkSGgoSQ3VzdG9tWGVub3R5cGVOYW1lGBAg",
+            "ASgJEhEKCUVuZG9nZW5lcxgRIAMoCRIRCglYZW5vZ2VuZXMYEiADKAkSLAoK",
+            "QXBwZWFyYW5jZRgTIAEoCzIYLlRyYWRpbmcuUHJvdG9BcHBlYXJhbmNlEiQK",
+            "B0FwcGFyZWwYFCADKAsyEy5UcmFkaW5nLlByb3RvVGhpbmcSJgoJRXF1aXBt",
+            "ZW50GBUgAygLMhMuVHJhZGluZy5Qcm90b1RoaW5nEiYKCUludmVudG9yeRgW",
+            "IAMoCzITLlRyYWRpbmcuUHJvdG9UaGluZyItCgpQcm90b1RyYWl0Eg8KB0Rl",
+            "Zk5hbWUYASABKAkSDgoGRGVncmVlGAIgASgFIlcKClByb3RvU2tpbGwSDwoH",
+            "RGVmTmFtZRgBIAEoCRINCgVMZXZlbBgCIAEoBRIYChBYcFNpbmNlTGFzdExl",
+            "dmVsGAMgASgCEg8KB1Bhc3Npb24YBCABKAUirgIKD1Byb3RvQXBwZWFyYW5j",
+            "ZRIXCg9Cb2R5VHlwZURlZk5hbWUYASABKAkSFwoPSGVhZFR5cGVEZWZOYW1l",
+            "GAIgASgJEhMKC0hhaXJEZWZOYW1lGAMgASgJEhQKDEJlYXJkRGVmTmFtZRgE",
+            "IAEoCRIZChFGYWNlVGF0dG9vRGVmTmFtZRgFIAEoCRIZChFCb2R5VGF0dG9v",
+            "RGVmTmFtZRgGIAEoCRISCgpGdXJEZWZOYW1lGAcgASgJEhwKFEZhdm9yaXRl",
+            "Q29sb3JEZWZOYW1lGAggASgJEiYKCUhhaXJDb2xvchgJIAEoCzITLlRyYWRp",
+            "bmcuUHJvdG9Db2xvchIuChFTa2luQ29sb3JPdmVycmlkZRgKIAEoCzITLlRy",
+            "YWRpbmcuUHJvdG9Db2xvciI4CgpQcm90b0NvbG9yEgkKAVIYASABKAISCQoB",
+            "RxgCIAEoAhIJCgFCGAMgASgCEgkKAUEYBCABKAJiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Trading.QualityReflection.Descriptor, global::Trading.ProtoAnimalReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoThing), global::Trading.ProtoThing.Parser, new[]{ "DefName", "StackCount", "StuffDefName", "Quality", "HitPoints", "InnerProtoThing", "Animal" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoThing), global::Trading.ProtoThing.Parser, new[]{ "DefName", "StackCount", "StuffDefName", "Quality", "HitPoints", "InnerProtoThing", "Animal", "Colonist" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoColonist), global::Trading.ProtoColonist.Parser, new[]{ "DefName", "KindDefName", "FirstName", "NickName", "LastName", "BiologicalAgeTicks", "ChronologicalAgeTicks", "IsFemale", "DevelopmentalStage", "ChildhoodDefName", "AdulthoodDefName", "Traits", "Skills", "Hediffs", "XenotypeDefName", "CustomXenotypeName", "Endogenes", "Xenogenes", "Appearance", "Apparel", "Equipment", "Inventory" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoTrait), global::Trading.ProtoTrait.Parser, new[]{ "DefName", "Degree" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoSkill), global::Trading.ProtoSkill.Parser, new[]{ "DefName", "Level", "XpSinceLastLevel", "Passion" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoAppearance), global::Trading.ProtoAppearance.Parser, new[]{ "BodyTypeDefName", "HeadTypeDefName", "HairDefName", "BeardDefName", "FaceTattooDefName", "BodyTattooDefName", "FurDefName", "FavoriteColorDefName", "HairColor", "SkinColorOverride" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoColor), global::Trading.ProtoColor.Parser, new[]{ "R", "G", "B", "A" }, null, null, null, null)
           }));
     }
     #endregion
@@ -73,6 +104,7 @@ namespace Trading {
       hitPoints_ = other.hitPoints_;
       innerProtoThing_ = other.innerProtoThing_ != null ? other.innerProtoThing_.Clone() : null;
       animal_ = other.animal_ != null ? other.animal_.Clone() : null;
+      colonist_ = other.colonist_ != null ? other.colonist_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -161,6 +193,20 @@ namespace Trading {
       }
     }
 
+    /// <summary>Field number for the "Colonist" field.</summary>
+    public const int ColonistFieldNumber = 8;
+    private global::Trading.ProtoColonist colonist_;
+    /// <summary>
+    /// Set when this thing is a colonist, empty otherwise
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Trading.ProtoColonist Colonist {
+      get { return colonist_; }
+      set {
+        colonist_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as ProtoThing);
@@ -181,6 +227,7 @@ namespace Trading {
       if (HitPoints != other.HitPoints) return false;
       if (!object.Equals(InnerProtoThing, other.InnerProtoThing)) return false;
       if (!object.Equals(Animal, other.Animal)) return false;
+      if (!object.Equals(Colonist, other.Colonist)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -194,6 +241,7 @@ namespace Trading {
       if (HitPoints != 0) hash ^= HitPoints.GetHashCode();
       if (innerProtoThing_ != null) hash ^= InnerProtoThing.GetHashCode();
       if (animal_ != null) hash ^= Animal.GetHashCode();
+      if (colonist_ != null) hash ^= Colonist.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -235,6 +283,10 @@ namespace Trading {
         output.WriteRawTag(58);
         output.WriteMessage(Animal);
       }
+      if (colonist_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(Colonist);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -263,6 +315,9 @@ namespace Trading {
       }
       if (animal_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Animal);
+      }
+      if (colonist_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Colonist);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -301,6 +356,12 @@ namespace Trading {
           Animal = new global::Trading.ProtoAnimal();
         }
         Animal.MergeFrom(other.Animal);
+      }
+      if (other.colonist_ != null) {
+        if (colonist_ == null) {
+          Colonist = new global::Trading.ProtoColonist();
+        }
+        Colonist.MergeFrom(other.Colonist);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -345,6 +406,1710 @@ namespace Trading {
               Animal = new global::Trading.ProtoAnimal();
             }
             input.ReadMessage(Animal);
+            break;
+          }
+          case 66: {
+            if (colonist_ == null) {
+              Colonist = new global::Trading.ProtoColonist();
+            }
+            input.ReadMessage(Colonist);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// A colonist being traded. Carried inside ProtoThing.Colonist.
+  /// This lives in Thing.proto rather than its own file because it holds ProtoThings (their gear) and ProtoThing
+  /// holds it, and protobuf files aren't allowed to import each other in a circle.
+  /// </summary>
+  public sealed partial class ProtoColonist : pb::IMessage<ProtoColonist> {
+    private static readonly pb::MessageParser<ProtoColonist> _parser = new pb::MessageParser<ProtoColonist>(() => new ProtoColonist());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ProtoColonist> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Trading.ThingReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoColonist() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoColonist(ProtoColonist other) : this() {
+      defName_ = other.defName_;
+      kindDefName_ = other.kindDefName_;
+      firstName_ = other.firstName_;
+      nickName_ = other.nickName_;
+      lastName_ = other.lastName_;
+      biologicalAgeTicks_ = other.biologicalAgeTicks_;
+      chronologicalAgeTicks_ = other.chronologicalAgeTicks_;
+      isFemale_ = other.isFemale_;
+      developmentalStage_ = other.developmentalStage_;
+      childhoodDefName_ = other.childhoodDefName_;
+      adulthoodDefName_ = other.adulthoodDefName_;
+      traits_ = other.traits_.Clone();
+      skills_ = other.skills_.Clone();
+      hediffs_ = other.hediffs_.Clone();
+      xenotypeDefName_ = other.xenotypeDefName_;
+      customXenotypeName_ = other.customXenotypeName_;
+      endogenes_ = other.endogenes_.Clone();
+      xenogenes_ = other.xenogenes_.Clone();
+      appearance_ = other.appearance_ != null ? other.appearance_.Clone() : null;
+      apparel_ = other.apparel_.Clone();
+      equipment_ = other.equipment_.Clone();
+      inventory_ = other.inventory_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoColonist Clone() {
+      return new ProtoColonist(this);
+    }
+
+    /// <summary>Field number for the "DefName" field.</summary>
+    public const int DefNameFieldNumber = 1;
+    private string defName_ = "";
+    /// <summary>
+    /// Identification
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string DefName {
+      get { return defName_; }
+      set {
+        defName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "KindDefName" field.</summary>
+    public const int KindDefNameFieldNumber = 2;
+    private string kindDefName_ = "";
+    /// <summary>
+    /// PawnKindDef name
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string KindDefName {
+      get { return kindDefName_; }
+      set {
+        kindDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "FirstName" field.</summary>
+    public const int FirstNameFieldNumber = 3;
+    private string firstName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string FirstName {
+      get { return firstName_; }
+      set {
+        firstName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "NickName" field.</summary>
+    public const int NickNameFieldNumber = 4;
+    private string nickName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string NickName {
+      get { return nickName_; }
+      set {
+        nickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "LastName" field.</summary>
+    public const int LastNameFieldNumber = 5;
+    private string lastName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string LastName {
+      get { return lastName_; }
+      set {
+        lastName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "BiologicalAgeTicks" field.</summary>
+    public const int BiologicalAgeTicksFieldNumber = 6;
+    private long biologicalAgeTicks_;
+    /// <summary>
+    /// Biology &amp; age
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long BiologicalAgeTicks {
+      get { return biologicalAgeTicks_; }
+      set {
+        biologicalAgeTicks_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ChronologicalAgeTicks" field.</summary>
+    public const int ChronologicalAgeTicksFieldNumber = 7;
+    private long chronologicalAgeTicks_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ChronologicalAgeTicks {
+      get { return chronologicalAgeTicks_; }
+      set {
+        chronologicalAgeTicks_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "IsFemale" field.</summary>
+    public const int IsFemaleFieldNumber = 8;
+    private bool isFemale_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool IsFemale {
+      get { return isFemale_; }
+      set {
+        isFemale_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "DevelopmentalStage" field.</summary>
+    public const int DevelopmentalStageFieldNumber = 9;
+    private int developmentalStage_;
+    /// <summary>
+    /// RimWorld's DevelopmentalStage as a number (baby, child, adult)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int DevelopmentalStage {
+      get { return developmentalStage_; }
+      set {
+        developmentalStage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ChildhoodDefName" field.</summary>
+    public const int ChildhoodDefNameFieldNumber = 10;
+    private string childhoodDefName_ = "";
+    /// <summary>
+    /// Story
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ChildhoodDefName {
+      get { return childhoodDefName_; }
+      set {
+        childhoodDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "AdulthoodDefName" field.</summary>
+    public const int AdulthoodDefNameFieldNumber = 11;
+    private string adulthoodDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string AdulthoodDefName {
+      get { return adulthoodDefName_; }
+      set {
+        adulthoodDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Traits" field.</summary>
+    public const int TraitsFieldNumber = 12;
+    private static readonly pb::FieldCodec<global::Trading.ProtoTrait> _repeated_traits_codec
+        = pb::FieldCodec.ForMessage(98, global::Trading.ProtoTrait.Parser);
+    private readonly pbc::RepeatedField<global::Trading.ProtoTrait> traits_ = new pbc::RepeatedField<global::Trading.ProtoTrait>();
+    /// <summary>
+    /// Only traits they chose or were born with; gene traits come back with the genes
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Trading.ProtoTrait> Traits {
+      get { return traits_; }
+    }
+
+    /// <summary>Field number for the "Skills" field.</summary>
+    public const int SkillsFieldNumber = 13;
+    private static readonly pb::FieldCodec<global::Trading.ProtoSkill> _repeated_skills_codec
+        = pb::FieldCodec.ForMessage(106, global::Trading.ProtoSkill.Parser);
+    private readonly pbc::RepeatedField<global::Trading.ProtoSkill> skills_ = new pbc::RepeatedField<global::Trading.ProtoSkill>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Trading.ProtoSkill> Skills {
+      get { return skills_; }
+    }
+
+    /// <summary>Field number for the "Hediffs" field.</summary>
+    public const int HediffsFieldNumber = 14;
+    private static readonly pb::FieldCodec<global::Trading.ProtoHediff> _repeated_hediffs_codec
+        = pb::FieldCodec.ForMessage(114, global::Trading.ProtoHediff.Parser);
+    private readonly pbc::RepeatedField<global::Trading.ProtoHediff> hediffs_ = new pbc::RepeatedField<global::Trading.ProtoHediff>();
+    /// <summary>
+    /// Health conditions, including implants, scars and missing parts
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Trading.ProtoHediff> Hediffs {
+      get { return hediffs_; }
+    }
+
+    /// <summary>Field number for the "XenotypeDefName" field.</summary>
+    public const int XenotypeDefNameFieldNumber = 15;
+    private string xenotypeDefName_ = "";
+    /// <summary>
+    /// Genes (Biotech)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string XenotypeDefName {
+      get { return xenotypeDefName_; }
+      set {
+        xenotypeDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "CustomXenotypeName" field.</summary>
+    public const int CustomXenotypeNameFieldNumber = 16;
+    private string customXenotypeName_ = "";
+    /// <summary>
+    /// Name of a custom xenotype, empty otherwise
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string CustomXenotypeName {
+      get { return customXenotypeName_; }
+      set {
+        customXenotypeName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Endogenes" field.</summary>
+    public const int EndogenesFieldNumber = 17;
+    private static readonly pb::FieldCodec<string> _repeated_endogenes_codec
+        = pb::FieldCodec.ForString(138);
+    private readonly pbc::RepeatedField<string> endogenes_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// GeneDef names they were born with
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> Endogenes {
+      get { return endogenes_; }
+    }
+
+    /// <summary>Field number for the "Xenogenes" field.</summary>
+    public const int XenogenesFieldNumber = 18;
+    private static readonly pb::FieldCodec<string> _repeated_xenogenes_codec
+        = pb::FieldCodec.ForString(146);
+    private readonly pbc::RepeatedField<string> xenogenes_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// GeneDef names from their xenotype or an implanter
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> Xenogenes {
+      get { return xenogenes_; }
+    }
+
+    /// <summary>Field number for the "Appearance" field.</summary>
+    public const int AppearanceFieldNumber = 19;
+    private global::Trading.ProtoAppearance appearance_;
+    /// <summary>
+    /// Looks
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Trading.ProtoAppearance Appearance {
+      get { return appearance_; }
+      set {
+        appearance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Apparel" field.</summary>
+    public const int ApparelFieldNumber = 20;
+    private static readonly pb::FieldCodec<global::Trading.ProtoThing> _repeated_apparel_codec
+        = pb::FieldCodec.ForMessage(162, global::Trading.ProtoThing.Parser);
+    private readonly pbc::RepeatedField<global::Trading.ProtoThing> apparel_ = new pbc::RepeatedField<global::Trading.ProtoThing>();
+    /// <summary>
+    /// Gear they take with them
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Trading.ProtoThing> Apparel {
+      get { return apparel_; }
+    }
+
+    /// <summary>Field number for the "Equipment" field.</summary>
+    public const int EquipmentFieldNumber = 21;
+    private static readonly pb::FieldCodec<global::Trading.ProtoThing> _repeated_equipment_codec
+        = pb::FieldCodec.ForMessage(170, global::Trading.ProtoThing.Parser);
+    private readonly pbc::RepeatedField<global::Trading.ProtoThing> equipment_ = new pbc::RepeatedField<global::Trading.ProtoThing>();
+    /// <summary>
+    /// Held weapon
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Trading.ProtoThing> Equipment {
+      get { return equipment_; }
+    }
+
+    /// <summary>Field number for the "Inventory" field.</summary>
+    public const int InventoryFieldNumber = 22;
+    private static readonly pb::FieldCodec<global::Trading.ProtoThing> _repeated_inventory_codec
+        = pb::FieldCodec.ForMessage(178, global::Trading.ProtoThing.Parser);
+    private readonly pbc::RepeatedField<global::Trading.ProtoThing> inventory_ = new pbc::RepeatedField<global::Trading.ProtoThing>();
+    /// <summary>
+    /// Things in their pockets (e.g. packed meals, medicine)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Trading.ProtoThing> Inventory {
+      get { return inventory_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ProtoColonist);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ProtoColonist other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DefName != other.DefName) return false;
+      if (KindDefName != other.KindDefName) return false;
+      if (FirstName != other.FirstName) return false;
+      if (NickName != other.NickName) return false;
+      if (LastName != other.LastName) return false;
+      if (BiologicalAgeTicks != other.BiologicalAgeTicks) return false;
+      if (ChronologicalAgeTicks != other.ChronologicalAgeTicks) return false;
+      if (IsFemale != other.IsFemale) return false;
+      if (DevelopmentalStage != other.DevelopmentalStage) return false;
+      if (ChildhoodDefName != other.ChildhoodDefName) return false;
+      if (AdulthoodDefName != other.AdulthoodDefName) return false;
+      if(!traits_.Equals(other.traits_)) return false;
+      if(!skills_.Equals(other.skills_)) return false;
+      if(!hediffs_.Equals(other.hediffs_)) return false;
+      if (XenotypeDefName != other.XenotypeDefName) return false;
+      if (CustomXenotypeName != other.CustomXenotypeName) return false;
+      if(!endogenes_.Equals(other.endogenes_)) return false;
+      if(!xenogenes_.Equals(other.xenogenes_)) return false;
+      if (!object.Equals(Appearance, other.Appearance)) return false;
+      if(!apparel_.Equals(other.apparel_)) return false;
+      if(!equipment_.Equals(other.equipment_)) return false;
+      if(!inventory_.Equals(other.inventory_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DefName.Length != 0) hash ^= DefName.GetHashCode();
+      if (KindDefName.Length != 0) hash ^= KindDefName.GetHashCode();
+      if (FirstName.Length != 0) hash ^= FirstName.GetHashCode();
+      if (NickName.Length != 0) hash ^= NickName.GetHashCode();
+      if (LastName.Length != 0) hash ^= LastName.GetHashCode();
+      if (BiologicalAgeTicks != 0L) hash ^= BiologicalAgeTicks.GetHashCode();
+      if (ChronologicalAgeTicks != 0L) hash ^= ChronologicalAgeTicks.GetHashCode();
+      if (IsFemale != false) hash ^= IsFemale.GetHashCode();
+      if (DevelopmentalStage != 0) hash ^= DevelopmentalStage.GetHashCode();
+      if (ChildhoodDefName.Length != 0) hash ^= ChildhoodDefName.GetHashCode();
+      if (AdulthoodDefName.Length != 0) hash ^= AdulthoodDefName.GetHashCode();
+      hash ^= traits_.GetHashCode();
+      hash ^= skills_.GetHashCode();
+      hash ^= hediffs_.GetHashCode();
+      if (XenotypeDefName.Length != 0) hash ^= XenotypeDefName.GetHashCode();
+      if (CustomXenotypeName.Length != 0) hash ^= CustomXenotypeName.GetHashCode();
+      hash ^= endogenes_.GetHashCode();
+      hash ^= xenogenes_.GetHashCode();
+      if (appearance_ != null) hash ^= Appearance.GetHashCode();
+      hash ^= apparel_.GetHashCode();
+      hash ^= equipment_.GetHashCode();
+      hash ^= inventory_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (DefName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DefName);
+      }
+      if (KindDefName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(KindDefName);
+      }
+      if (FirstName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(FirstName);
+      }
+      if (NickName.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(NickName);
+      }
+      if (LastName.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(LastName);
+      }
+      if (BiologicalAgeTicks != 0L) {
+        output.WriteRawTag(48);
+        output.WriteInt64(BiologicalAgeTicks);
+      }
+      if (ChronologicalAgeTicks != 0L) {
+        output.WriteRawTag(56);
+        output.WriteInt64(ChronologicalAgeTicks);
+      }
+      if (IsFemale != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(IsFemale);
+      }
+      if (DevelopmentalStage != 0) {
+        output.WriteRawTag(72);
+        output.WriteInt32(DevelopmentalStage);
+      }
+      if (ChildhoodDefName.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(ChildhoodDefName);
+      }
+      if (AdulthoodDefName.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(AdulthoodDefName);
+      }
+      traits_.WriteTo(output, _repeated_traits_codec);
+      skills_.WriteTo(output, _repeated_skills_codec);
+      hediffs_.WriteTo(output, _repeated_hediffs_codec);
+      if (XenotypeDefName.Length != 0) {
+        output.WriteRawTag(122);
+        output.WriteString(XenotypeDefName);
+      }
+      if (CustomXenotypeName.Length != 0) {
+        output.WriteRawTag(130, 1);
+        output.WriteString(CustomXenotypeName);
+      }
+      endogenes_.WriteTo(output, _repeated_endogenes_codec);
+      xenogenes_.WriteTo(output, _repeated_xenogenes_codec);
+      if (appearance_ != null) {
+        output.WriteRawTag(154, 1);
+        output.WriteMessage(Appearance);
+      }
+      apparel_.WriteTo(output, _repeated_apparel_codec);
+      equipment_.WriteTo(output, _repeated_equipment_codec);
+      inventory_.WriteTo(output, _repeated_inventory_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (DefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DefName);
+      }
+      if (KindDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(KindDefName);
+      }
+      if (FirstName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FirstName);
+      }
+      if (NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NickName);
+      }
+      if (LastName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(LastName);
+      }
+      if (BiologicalAgeTicks != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(BiologicalAgeTicks);
+      }
+      if (ChronologicalAgeTicks != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ChronologicalAgeTicks);
+      }
+      if (IsFemale != false) {
+        size += 1 + 1;
+      }
+      if (DevelopmentalStage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DevelopmentalStage);
+      }
+      if (ChildhoodDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ChildhoodDefName);
+      }
+      if (AdulthoodDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AdulthoodDefName);
+      }
+      size += traits_.CalculateSize(_repeated_traits_codec);
+      size += skills_.CalculateSize(_repeated_skills_codec);
+      size += hediffs_.CalculateSize(_repeated_hediffs_codec);
+      if (XenotypeDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(XenotypeDefName);
+      }
+      if (CustomXenotypeName.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(CustomXenotypeName);
+      }
+      size += endogenes_.CalculateSize(_repeated_endogenes_codec);
+      size += xenogenes_.CalculateSize(_repeated_xenogenes_codec);
+      if (appearance_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Appearance);
+      }
+      size += apparel_.CalculateSize(_repeated_apparel_codec);
+      size += equipment_.CalculateSize(_repeated_equipment_codec);
+      size += inventory_.CalculateSize(_repeated_inventory_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ProtoColonist other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DefName.Length != 0) {
+        DefName = other.DefName;
+      }
+      if (other.KindDefName.Length != 0) {
+        KindDefName = other.KindDefName;
+      }
+      if (other.FirstName.Length != 0) {
+        FirstName = other.FirstName;
+      }
+      if (other.NickName.Length != 0) {
+        NickName = other.NickName;
+      }
+      if (other.LastName.Length != 0) {
+        LastName = other.LastName;
+      }
+      if (other.BiologicalAgeTicks != 0L) {
+        BiologicalAgeTicks = other.BiologicalAgeTicks;
+      }
+      if (other.ChronologicalAgeTicks != 0L) {
+        ChronologicalAgeTicks = other.ChronologicalAgeTicks;
+      }
+      if (other.IsFemale != false) {
+        IsFemale = other.IsFemale;
+      }
+      if (other.DevelopmentalStage != 0) {
+        DevelopmentalStage = other.DevelopmentalStage;
+      }
+      if (other.ChildhoodDefName.Length != 0) {
+        ChildhoodDefName = other.ChildhoodDefName;
+      }
+      if (other.AdulthoodDefName.Length != 0) {
+        AdulthoodDefName = other.AdulthoodDefName;
+      }
+      traits_.Add(other.traits_);
+      skills_.Add(other.skills_);
+      hediffs_.Add(other.hediffs_);
+      if (other.XenotypeDefName.Length != 0) {
+        XenotypeDefName = other.XenotypeDefName;
+      }
+      if (other.CustomXenotypeName.Length != 0) {
+        CustomXenotypeName = other.CustomXenotypeName;
+      }
+      endogenes_.Add(other.endogenes_);
+      xenogenes_.Add(other.xenogenes_);
+      if (other.appearance_ != null) {
+        if (appearance_ == null) {
+          Appearance = new global::Trading.ProtoAppearance();
+        }
+        Appearance.MergeFrom(other.Appearance);
+      }
+      apparel_.Add(other.apparel_);
+      equipment_.Add(other.equipment_);
+      inventory_.Add(other.inventory_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            DefName = input.ReadString();
+            break;
+          }
+          case 18: {
+            KindDefName = input.ReadString();
+            break;
+          }
+          case 26: {
+            FirstName = input.ReadString();
+            break;
+          }
+          case 34: {
+            NickName = input.ReadString();
+            break;
+          }
+          case 42: {
+            LastName = input.ReadString();
+            break;
+          }
+          case 48: {
+            BiologicalAgeTicks = input.ReadInt64();
+            break;
+          }
+          case 56: {
+            ChronologicalAgeTicks = input.ReadInt64();
+            break;
+          }
+          case 64: {
+            IsFemale = input.ReadBool();
+            break;
+          }
+          case 72: {
+            DevelopmentalStage = input.ReadInt32();
+            break;
+          }
+          case 82: {
+            ChildhoodDefName = input.ReadString();
+            break;
+          }
+          case 90: {
+            AdulthoodDefName = input.ReadString();
+            break;
+          }
+          case 98: {
+            traits_.AddEntriesFrom(input, _repeated_traits_codec);
+            break;
+          }
+          case 106: {
+            skills_.AddEntriesFrom(input, _repeated_skills_codec);
+            break;
+          }
+          case 114: {
+            hediffs_.AddEntriesFrom(input, _repeated_hediffs_codec);
+            break;
+          }
+          case 122: {
+            XenotypeDefName = input.ReadString();
+            break;
+          }
+          case 130: {
+            CustomXenotypeName = input.ReadString();
+            break;
+          }
+          case 138: {
+            endogenes_.AddEntriesFrom(input, _repeated_endogenes_codec);
+            break;
+          }
+          case 146: {
+            xenogenes_.AddEntriesFrom(input, _repeated_xenogenes_codec);
+            break;
+          }
+          case 154: {
+            if (appearance_ == null) {
+              Appearance = new global::Trading.ProtoAppearance();
+            }
+            input.ReadMessage(Appearance);
+            break;
+          }
+          case 162: {
+            apparel_.AddEntriesFrom(input, _repeated_apparel_codec);
+            break;
+          }
+          case 170: {
+            equipment_.AddEntriesFrom(input, _repeated_equipment_codec);
+            break;
+          }
+          case 178: {
+            inventory_.AddEntriesFrom(input, _repeated_inventory_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ProtoTrait : pb::IMessage<ProtoTrait> {
+    private static readonly pb::MessageParser<ProtoTrait> _parser = new pb::MessageParser<ProtoTrait>(() => new ProtoTrait());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ProtoTrait> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Trading.ThingReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoTrait() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoTrait(ProtoTrait other) : this() {
+      defName_ = other.defName_;
+      degree_ = other.degree_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoTrait Clone() {
+      return new ProtoTrait(this);
+    }
+
+    /// <summary>Field number for the "DefName" field.</summary>
+    public const int DefNameFieldNumber = 1;
+    private string defName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string DefName {
+      get { return defName_; }
+      set {
+        defName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Degree" field.</summary>
+    public const int DegreeFieldNumber = 2;
+    private int degree_;
+    /// <summary>
+    /// Which version of the trait, e.g. "Optimist" vs "Pessimist" share a def
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Degree {
+      get { return degree_; }
+      set {
+        degree_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ProtoTrait);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ProtoTrait other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DefName != other.DefName) return false;
+      if (Degree != other.Degree) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DefName.Length != 0) hash ^= DefName.GetHashCode();
+      if (Degree != 0) hash ^= Degree.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (DefName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DefName);
+      }
+      if (Degree != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Degree);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (DefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DefName);
+      }
+      if (Degree != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Degree);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ProtoTrait other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DefName.Length != 0) {
+        DefName = other.DefName;
+      }
+      if (other.Degree != 0) {
+        Degree = other.Degree;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            DefName = input.ReadString();
+            break;
+          }
+          case 16: {
+            Degree = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ProtoSkill : pb::IMessage<ProtoSkill> {
+    private static readonly pb::MessageParser<ProtoSkill> _parser = new pb::MessageParser<ProtoSkill>(() => new ProtoSkill());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ProtoSkill> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Trading.ThingReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoSkill() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoSkill(ProtoSkill other) : this() {
+      defName_ = other.defName_;
+      level_ = other.level_;
+      xpSinceLastLevel_ = other.xpSinceLastLevel_;
+      passion_ = other.passion_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoSkill Clone() {
+      return new ProtoSkill(this);
+    }
+
+    /// <summary>Field number for the "DefName" field.</summary>
+    public const int DefNameFieldNumber = 1;
+    private string defName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string DefName {
+      get { return defName_; }
+      set {
+        defName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Level" field.</summary>
+    public const int LevelFieldNumber = 2;
+    private int level_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Level {
+      get { return level_; }
+      set {
+        level_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "XpSinceLastLevel" field.</summary>
+    public const int XpSinceLastLevelFieldNumber = 3;
+    private float xpSinceLastLevel_;
+    /// <summary>
+    /// Progress towards the next level
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float XpSinceLastLevel {
+      get { return xpSinceLastLevel_; }
+      set {
+        xpSinceLastLevel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Passion" field.</summary>
+    public const int PassionFieldNumber = 4;
+    private int passion_;
+    /// <summary>
+    /// 0 none, 1 minor, 2 major (or a modded passion)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Passion {
+      get { return passion_; }
+      set {
+        passion_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ProtoSkill);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ProtoSkill other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DefName != other.DefName) return false;
+      if (Level != other.Level) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(XpSinceLastLevel, other.XpSinceLastLevel)) return false;
+      if (Passion != other.Passion) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DefName.Length != 0) hash ^= DefName.GetHashCode();
+      if (Level != 0) hash ^= Level.GetHashCode();
+      if (XpSinceLastLevel != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(XpSinceLastLevel);
+      if (Passion != 0) hash ^= Passion.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (DefName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DefName);
+      }
+      if (Level != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Level);
+      }
+      if (XpSinceLastLevel != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(XpSinceLastLevel);
+      }
+      if (Passion != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Passion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (DefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DefName);
+      }
+      if (Level != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Level);
+      }
+      if (XpSinceLastLevel != 0F) {
+        size += 1 + 4;
+      }
+      if (Passion != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Passion);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ProtoSkill other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DefName.Length != 0) {
+        DefName = other.DefName;
+      }
+      if (other.Level != 0) {
+        Level = other.Level;
+      }
+      if (other.XpSinceLastLevel != 0F) {
+        XpSinceLastLevel = other.XpSinceLastLevel;
+      }
+      if (other.Passion != 0) {
+        Passion = other.Passion;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            DefName = input.ReadString();
+            break;
+          }
+          case 16: {
+            Level = input.ReadInt32();
+            break;
+          }
+          case 29: {
+            XpSinceLastLevel = input.ReadFloat();
+            break;
+          }
+          case 32: {
+            Passion = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ProtoAppearance : pb::IMessage<ProtoAppearance> {
+    private static readonly pb::MessageParser<ProtoAppearance> _parser = new pb::MessageParser<ProtoAppearance>(() => new ProtoAppearance());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ProtoAppearance> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Trading.ThingReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoAppearance() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoAppearance(ProtoAppearance other) : this() {
+      bodyTypeDefName_ = other.bodyTypeDefName_;
+      headTypeDefName_ = other.headTypeDefName_;
+      hairDefName_ = other.hairDefName_;
+      beardDefName_ = other.beardDefName_;
+      faceTattooDefName_ = other.faceTattooDefName_;
+      bodyTattooDefName_ = other.bodyTattooDefName_;
+      furDefName_ = other.furDefName_;
+      favoriteColorDefName_ = other.favoriteColorDefName_;
+      hairColor_ = other.hairColor_ != null ? other.hairColor_.Clone() : null;
+      skinColorOverride_ = other.skinColorOverride_ != null ? other.skinColorOverride_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoAppearance Clone() {
+      return new ProtoAppearance(this);
+    }
+
+    /// <summary>Field number for the "BodyTypeDefName" field.</summary>
+    public const int BodyTypeDefNameFieldNumber = 1;
+    private string bodyTypeDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string BodyTypeDefName {
+      get { return bodyTypeDefName_; }
+      set {
+        bodyTypeDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "HeadTypeDefName" field.</summary>
+    public const int HeadTypeDefNameFieldNumber = 2;
+    private string headTypeDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string HeadTypeDefName {
+      get { return headTypeDefName_; }
+      set {
+        headTypeDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "HairDefName" field.</summary>
+    public const int HairDefNameFieldNumber = 3;
+    private string hairDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string HairDefName {
+      get { return hairDefName_; }
+      set {
+        hairDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "BeardDefName" field.</summary>
+    public const int BeardDefNameFieldNumber = 4;
+    private string beardDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string BeardDefName {
+      get { return beardDefName_; }
+      set {
+        beardDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "FaceTattooDefName" field.</summary>
+    public const int FaceTattooDefNameFieldNumber = 5;
+    private string faceTattooDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string FaceTattooDefName {
+      get { return faceTattooDefName_; }
+      set {
+        faceTattooDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "BodyTattooDefName" field.</summary>
+    public const int BodyTattooDefNameFieldNumber = 6;
+    private string bodyTattooDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string BodyTattooDefName {
+      get { return bodyTattooDefName_; }
+      set {
+        bodyTattooDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "FurDefName" field.</summary>
+    public const int FurDefNameFieldNumber = 7;
+    private string furDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string FurDefName {
+      get { return furDefName_; }
+      set {
+        furDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "FavoriteColorDefName" field.</summary>
+    public const int FavoriteColorDefNameFieldNumber = 8;
+    private string favoriteColorDefName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string FavoriteColorDefName {
+      get { return favoriteColorDefName_; }
+      set {
+        favoriteColorDefName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "HairColor" field.</summary>
+    public const int HairColorFieldNumber = 9;
+    private global::Trading.ProtoColor hairColor_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Trading.ProtoColor HairColor {
+      get { return hairColor_; }
+      set {
+        hairColor_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SkinColorOverride" field.</summary>
+    public const int SkinColorOverrideFieldNumber = 10;
+    private global::Trading.ProtoColor skinColorOverride_;
+    /// <summary>
+    /// Only set when something overrides the skin colour from genes
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Trading.ProtoColor SkinColorOverride {
+      get { return skinColorOverride_; }
+      set {
+        skinColorOverride_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ProtoAppearance);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ProtoAppearance other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (BodyTypeDefName != other.BodyTypeDefName) return false;
+      if (HeadTypeDefName != other.HeadTypeDefName) return false;
+      if (HairDefName != other.HairDefName) return false;
+      if (BeardDefName != other.BeardDefName) return false;
+      if (FaceTattooDefName != other.FaceTattooDefName) return false;
+      if (BodyTattooDefName != other.BodyTattooDefName) return false;
+      if (FurDefName != other.FurDefName) return false;
+      if (FavoriteColorDefName != other.FavoriteColorDefName) return false;
+      if (!object.Equals(HairColor, other.HairColor)) return false;
+      if (!object.Equals(SkinColorOverride, other.SkinColorOverride)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (BodyTypeDefName.Length != 0) hash ^= BodyTypeDefName.GetHashCode();
+      if (HeadTypeDefName.Length != 0) hash ^= HeadTypeDefName.GetHashCode();
+      if (HairDefName.Length != 0) hash ^= HairDefName.GetHashCode();
+      if (BeardDefName.Length != 0) hash ^= BeardDefName.GetHashCode();
+      if (FaceTattooDefName.Length != 0) hash ^= FaceTattooDefName.GetHashCode();
+      if (BodyTattooDefName.Length != 0) hash ^= BodyTattooDefName.GetHashCode();
+      if (FurDefName.Length != 0) hash ^= FurDefName.GetHashCode();
+      if (FavoriteColorDefName.Length != 0) hash ^= FavoriteColorDefName.GetHashCode();
+      if (hairColor_ != null) hash ^= HairColor.GetHashCode();
+      if (skinColorOverride_ != null) hash ^= SkinColorOverride.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (BodyTypeDefName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(BodyTypeDefName);
+      }
+      if (HeadTypeDefName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(HeadTypeDefName);
+      }
+      if (HairDefName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(HairDefName);
+      }
+      if (BeardDefName.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(BeardDefName);
+      }
+      if (FaceTattooDefName.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(FaceTattooDefName);
+      }
+      if (BodyTattooDefName.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(BodyTattooDefName);
+      }
+      if (FurDefName.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(FurDefName);
+      }
+      if (FavoriteColorDefName.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(FavoriteColorDefName);
+      }
+      if (hairColor_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(HairColor);
+      }
+      if (skinColorOverride_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(SkinColorOverride);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (BodyTypeDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BodyTypeDefName);
+      }
+      if (HeadTypeDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(HeadTypeDefName);
+      }
+      if (HairDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(HairDefName);
+      }
+      if (BeardDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BeardDefName);
+      }
+      if (FaceTattooDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FaceTattooDefName);
+      }
+      if (BodyTattooDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BodyTattooDefName);
+      }
+      if (FurDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FurDefName);
+      }
+      if (FavoriteColorDefName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FavoriteColorDefName);
+      }
+      if (hairColor_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(HairColor);
+      }
+      if (skinColorOverride_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SkinColorOverride);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ProtoAppearance other) {
+      if (other == null) {
+        return;
+      }
+      if (other.BodyTypeDefName.Length != 0) {
+        BodyTypeDefName = other.BodyTypeDefName;
+      }
+      if (other.HeadTypeDefName.Length != 0) {
+        HeadTypeDefName = other.HeadTypeDefName;
+      }
+      if (other.HairDefName.Length != 0) {
+        HairDefName = other.HairDefName;
+      }
+      if (other.BeardDefName.Length != 0) {
+        BeardDefName = other.BeardDefName;
+      }
+      if (other.FaceTattooDefName.Length != 0) {
+        FaceTattooDefName = other.FaceTattooDefName;
+      }
+      if (other.BodyTattooDefName.Length != 0) {
+        BodyTattooDefName = other.BodyTattooDefName;
+      }
+      if (other.FurDefName.Length != 0) {
+        FurDefName = other.FurDefName;
+      }
+      if (other.FavoriteColorDefName.Length != 0) {
+        FavoriteColorDefName = other.FavoriteColorDefName;
+      }
+      if (other.hairColor_ != null) {
+        if (hairColor_ == null) {
+          HairColor = new global::Trading.ProtoColor();
+        }
+        HairColor.MergeFrom(other.HairColor);
+      }
+      if (other.skinColorOverride_ != null) {
+        if (skinColorOverride_ == null) {
+          SkinColorOverride = new global::Trading.ProtoColor();
+        }
+        SkinColorOverride.MergeFrom(other.SkinColorOverride);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            BodyTypeDefName = input.ReadString();
+            break;
+          }
+          case 18: {
+            HeadTypeDefName = input.ReadString();
+            break;
+          }
+          case 26: {
+            HairDefName = input.ReadString();
+            break;
+          }
+          case 34: {
+            BeardDefName = input.ReadString();
+            break;
+          }
+          case 42: {
+            FaceTattooDefName = input.ReadString();
+            break;
+          }
+          case 50: {
+            BodyTattooDefName = input.ReadString();
+            break;
+          }
+          case 58: {
+            FurDefName = input.ReadString();
+            break;
+          }
+          case 66: {
+            FavoriteColorDefName = input.ReadString();
+            break;
+          }
+          case 74: {
+            if (hairColor_ == null) {
+              HairColor = new global::Trading.ProtoColor();
+            }
+            input.ReadMessage(HairColor);
+            break;
+          }
+          case 82: {
+            if (skinColorOverride_ == null) {
+              SkinColorOverride = new global::Trading.ProtoColor();
+            }
+            input.ReadMessage(SkinColorOverride);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ProtoColor : pb::IMessage<ProtoColor> {
+    private static readonly pb::MessageParser<ProtoColor> _parser = new pb::MessageParser<ProtoColor>(() => new ProtoColor());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ProtoColor> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Trading.ThingReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoColor() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoColor(ProtoColor other) : this() {
+      r_ = other.r_;
+      g_ = other.g_;
+      b_ = other.b_;
+      a_ = other.a_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ProtoColor Clone() {
+      return new ProtoColor(this);
+    }
+
+    /// <summary>Field number for the "R" field.</summary>
+    public const int RFieldNumber = 1;
+    private float r_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float R {
+      get { return r_; }
+      set {
+        r_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "G" field.</summary>
+    public const int GFieldNumber = 2;
+    private float g_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float G {
+      get { return g_; }
+      set {
+        g_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "B" field.</summary>
+    public const int BFieldNumber = 3;
+    private float b_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float B {
+      get { return b_; }
+      set {
+        b_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "A" field.</summary>
+    public const int AFieldNumber = 4;
+    private float a_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float A {
+      get { return a_; }
+      set {
+        a_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ProtoColor);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ProtoColor other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(R, other.R)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(G, other.G)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(B, other.B)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(A, other.A)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (R != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(R);
+      if (G != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(G);
+      if (B != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(B);
+      if (A != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(A);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (R != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(R);
+      }
+      if (G != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(G);
+      }
+      if (B != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(B);
+      }
+      if (A != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(A);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (R != 0F) {
+        size += 1 + 4;
+      }
+      if (G != 0F) {
+        size += 1 + 4;
+      }
+      if (B != 0F) {
+        size += 1 + 4;
+      }
+      if (A != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ProtoColor other) {
+      if (other == null) {
+        return;
+      }
+      if (other.R != 0F) {
+        R = other.R;
+      }
+      if (other.G != 0F) {
+        G = other.G;
+      }
+      if (other.B != 0F) {
+        B = other.B;
+      }
+      if (other.A != 0F) {
+        A = other.A;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 13: {
+            R = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            G = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            B = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            A = input.ReadFloat();
             break;
           }
         }

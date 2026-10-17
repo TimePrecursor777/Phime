@@ -137,6 +137,12 @@ namespace PhinixClient
                 .Where(animal => !animal.Dead);
             things = things.Concat(animals);
 
+            // Add every free colonist on our home maps (see ColonistConverter.CanTrade for who counts)
+            IEnumerable<Thing> colonists = homeMaps
+                .SelectMany(map => map.mapPawns.FreeColonistsSpawned)
+                .Where(ColonistConverter.CanTrade);
+            things = things.Concat(colonists);
+
             // Group all items and cache them for later
             availableItems = StackedThings.GroupThings(things);
             filteredAvailableItems = availableItems;
@@ -360,14 +366,15 @@ namespace PhinixClient
             // ToList() runs the query once so we don't loop over protoThings twice
             List<ProtoThing> offer = protoThings.ToList();
 
-            // Like Python's [t for t in offer if t.Animal is None]
+            // Like Python's [t for t in offer if not is_display_pawn(t)]
             List<StackedThings> rows = StackedThings.GroupThings(offer
-                .Where(protoThing => protoThing.Animal == null)
+                .Where(protoThing => !StackedThings.IsDisplayPawn(protoThing))
                 .Select(TradingThingConverter.ConvertThingFromProtoOrUnknown));
 
+            // Animals and colonists get a display-only row each
             rows.AddRange(offer
-                .Where(protoThing => protoThing.Animal != null)
-                .Select(protoThing => StackedThings.ForDisplayAnimal(protoThing.Animal)));
+                .Where(StackedThings.IsDisplayPawn)
+                .Select(StackedThings.ForDisplayPawn));
 
             return rows;
         }

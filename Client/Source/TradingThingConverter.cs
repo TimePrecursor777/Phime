@@ -66,6 +66,12 @@ namespace PhinixClient
                 // Attach the animal's details (name, age, training, health)
                 protoThing.Animal = AnimalConverter.ConvertAnimalFromVerse((Pawn) verseThing);
             }
+            // Or a colonist
+            else if (ColonistConverter.IsColonist(verseThing))
+            {
+                // Attach the colonist's details (name, story, skills, genes, health, looks, gear)
+                protoThing.Colonist = ColonistConverter.ConvertColonistFromVerse((Pawn) verseThing);
+            }
 
             // Return constructed protoThing
             return protoThing;
@@ -85,6 +91,12 @@ namespace PhinixClient
             if (protoThing.Animal != null)
             {
                 return AnimalConverter.ConvertAnimalFromProto(protoThing.Animal);
+            }
+
+            // So are colonists
+            if (protoThing.Colonist != null)
+            {
+                return ColonistConverter.ConvertColonistFromProto(protoThing.Colonist);
             }
 
             // Try to get the ThingDef for protoThing
