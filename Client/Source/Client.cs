@@ -292,6 +292,11 @@ namespace PhinixClient
                     displayName = "???";
                 }
 
+                // Also pop up a message in the top left, like RimWorld's own "a trader has arrived" messages.
+                // Messages are drawn by the game, so they have to be added on the main thread
+                string messageName = displayName;
+                RunOnMainThread(() => Messages.Message("Phinix_trade_tradeReceivedMessage".Translate(messageName), MessageTypeDefOf.PositiveEvent, historical: false));
+
                 // Generate a letter
                 LetterDef letterDef = DefDatabase<LetterDef>.GetNamed("TradeCreated");
                 Find.LetterStack.ReceiveLetter(

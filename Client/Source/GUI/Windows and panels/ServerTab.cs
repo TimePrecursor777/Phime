@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Trading;
+using Utils;
 using PhinixClient.GUI;
 using RimWorld;
 using UnityEngine;
@@ -209,8 +212,38 @@ namespace PhinixClient
                 Find.WindowStack.Add(new PostListingWindow());
             }
 
+            // Open trades button, just left of the post button. Greyed out when there aren't any
+            Rect tradesButtonRect = new Rect(postButtonRect.xMin - DEFAULT_SPACING - POST_LISTING_BUTTON_WIDTH, postButtonRect.yMin, POST_LISTING_BUTTON_WIDTH, POST_LISTING_BUTTON_HEIGHT);
+            ImmutableTrade[] trades = Instance.Settings.ShowBlockedTrades ? Instance.GetTrades() : Instance.GetTradesExceptWith(Instance.Settings.BlockedUsers);
+            if (Widgets.ButtonText(tradesButtonRect, "Phinix_market_openTradesButton".Translate(trades.Length), active: trades.Length > 0) && trades.Length > 0)
+            {
+                openTradeOrPick(trades);
+            }
+
             // Board
             marketBoardList.Draw(boardRect);
+        }
+
+        /// <summary>
+        /// Opens the trade window straight away if there's only one trade, otherwise shows a menu to pick which one.
+        /// </summary>
+        /// <param name="trades">Active trades</param>
+        private void openTradeOrPick(ImmutableTrade[] trades)
+        {
+            if (trades.Length == 1)
+            {
+                Find.WindowStack.Add(new TradeWindow(trades[0]));
+                return;
+            }
+
+            // A FloatMenu is the little pop-up list RimWorld shows when you right-click something
+            List<FloatMenuOption> options = trades
+                .Select(trade => new FloatMenuOption(
+                    "Phinix_trade_activeTrade_tradeWithLabel".Translate(TextHelper.StripRichText(trade.OtherPartyDisplayName)),
+                    () => Find.WindowStack.Add(new TradeWindow(trade))
+                ))
+                .ToList();
+            Find.WindowStack.Add(new FloatMenu(options));
         }
 
         /// <summary>

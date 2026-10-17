@@ -58,6 +58,7 @@
     <Phinix_trade_noItemsAvailable>You have no items available to trade.</Phinix_trade_noItemsAvailable>
     <Phinix_trade_noItemsAvailableWithSearch>No items found that match the search criteria.</Phinix_trade_noItemsAvailableWithSearch>
     <Phinix_trade_tradeReceivedLetter_label>Trade from {0}</Phinix_trade_tradeReceivedLetter_label>
+    <Phinix_trade_tradeReceivedMessage>{0} wants to trade with you.</Phinix_trade_tradeReceivedMessage>
     <Phinix_trade_tradeReceivedLetter_description>{0} has sent you a trade offer.\n\nCheck the 'Trades' tab in the Phinix chat panel for details.</Phinix_trade_tradeReceivedLetter_description>
     <Phinix_trade_tradeCompletedLetter_label>Trade successful</Phinix_trade_tradeCompletedLetter_label>
     <Phinix_trade_tradeCompletedLetter_description>Your trade with {0} was successful.</Phinix_trade_tradeCompletedLetter_description>
@@ -92,6 +93,7 @@
     <Phinix_market_hoursAgo>{0} h ago</Phinix_market_hoursAgo>
     <Phinix_market_daysAgo>{0} d ago</Phinix_market_daysAgo>
     <Phinix_market_newListingButton>Post a listing</Phinix_market_newListingButton>
+    <Phinix_market_openTradesButton>Open trades ({0})</Phinix_market_openTradesButton>
     <Phinix_market_postTitle>New listing</Phinix_market_postTitle>
     <Phinix_market_searchLabel>Find items to add:</Phinix_market_searchLabel>
     <Phinix_market_typeToSearch>Type at least 2 letters to search.</Phinix_market_typeToSearch>
