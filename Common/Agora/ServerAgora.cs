@@ -16,8 +16,13 @@ namespace Agora
     /// </summary>
     /// <remarks>
     /// Modelled on <c>Chat.ServerChat</c>, so compare the two if anything here is unclear.
+    /// <para>
+    /// This is a "partial" class, which means its code is split across more than one file. The market board lives in
+    /// this file and bounties live in ServerAgora.Bounties.cs, but C# glues them together into one class when it
+    /// builds, so they share fields and can call each other's methods. It's purely to keep each file a manageable size.
+    /// </para>
     /// </remarks>
-    public class ServerAgora : Agora
+    public partial class ServerAgora : Agora
     {
         /// <inheritdoc/>
         public override event EventHandler<LogEventArgs> OnLogEntry;
@@ -79,13 +84,18 @@ namespace Agora
         /// <param name="maxListingsPerUser">Most listings one user can have on the board at once</param>
         /// <param name="postRateLimitPosts">Most listings one user can post within <paramref name="postRateLimitSeconds"/></param>
         /// <param name="postRateLimitSeconds">Length of the rate limit window in seconds</param>
-        public ServerAgora(NetServer netServer, ServerAuthenticator authenticator, ServerUserManager userManager, int maxListingsPerUser = 3, int postRateLimitPosts = 2, int postRateLimitSeconds = 60)
+        /// <param name="maxBountiesPerUser">Most bounties one user can have up at once</param>
+        /// <param name="bountyExpiryDays">How many days a bounty stays up before its reward goes back to the poster</param>
+        public ServerAgora(NetServer netServer, ServerAuthenticator authenticator, ServerUserManager userManager, int maxListingsPerUser = 3, int postRateLimitPosts = 2, int postRateLimitSeconds = 60, int maxBountiesPerUser = 2, int bountyExpiryDays = 7)
         {
             this.netServer = netServer;
             this.authenticator = authenticator;
             this.userManager = userManager;
             this.maxListingsPerUser = maxListingsPerUser;
             this.postRateLimiter = new RateLimiter(postRateLimitPosts, TimeSpan.FromSeconds(postRateLimitSeconds));
+
+            // Set up the bounty half (in ServerAgora.Bounties.cs)
+            initBounties(maxBountiesPerUser, bountyExpiryDays, postRateLimitPosts, postRateLimitSeconds);
 
             // Ask to be handed every packet addressed to this module, and to be told when someone logs in
             netServer.RegisterPacketHandler(MODULE_NAME, packetHandler);
@@ -98,6 +108,9 @@ namespace Agora
         private void loginHandler(object sender, ServerLoginEventArgs args)
         {
             sendSyncListings(args.ConnectionId);
+
+            // Send the bounty board too, plus anything that was delivered while they were away
+            bountyLoginHandler(args.ConnectionId, args.Uuid);
         }
 
         /// <summary>
@@ -121,6 +134,20 @@ namespace Agora
                 case "RemoveListingPacket":
                     RaiseLogEntry(new LogEventArgs(string.Format("Got a RemoveListingPacket from {0}", connectionId.Highlight(HighlightType.ConnectionID)), LogLevel.DEBUG));
                     removeListingPacketHandler(connectionId, message.Unpack<RemoveListingPacket>());
+                    break;
+
+                // Bounty packets, handled in ServerAgora.Bounties.cs
+                case "PostBountyPacket":
+                    RaiseLogEntry(new LogEventArgs(string.Format("Got a PostBountyPacket from {0}", connectionId.Highlight(HighlightType.ConnectionID)), LogLevel.DEBUG));
+                    postBountyPacketHandler(connectionId, message.Unpack<PostBountyPacket>());
+                    break;
+                case "CancelBountyPacket":
+                    RaiseLogEntry(new LogEventArgs(string.Format("Got a CancelBountyPacket from {0}", connectionId.Highlight(HighlightType.ConnectionID)), LogLevel.DEBUG));
+                    cancelBountyPacketHandler(connectionId, message.Unpack<CancelBountyPacket>());
+                    break;
+                case "FulfilBountyPacket":
+                    RaiseLogEntry(new LogEventArgs(string.Format("Got a FulfilBountyPacket from {0}", connectionId.Highlight(HighlightType.ConnectionID)), LogLevel.DEBUG));
+                    fulfilBountyPacketHandler(connectionId, message.Unpack<FulfilBountyPacket>());
                     break;
                 default:
                     RaiseLogEntry(new LogEventArgs("Got an unknown packet type (" + typeUrl.Type + "), discarding...", LogLevel.DEBUG));

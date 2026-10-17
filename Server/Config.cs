@@ -154,6 +154,24 @@ namespace PhinixServer
         public int MarketPostRateLimitSeconds = 60;
 
         /// <summary>
+        /// Path to the bounty database file. Bounties are always saved, because they hold players' reward items.
+        /// </summary>
+        [DataMember(Name = "BountyDatabaseFile", Order = 22)]
+        public string BountyDatabasePath = "bounties";
+
+        /// <summary>
+        /// Most bounties one user can have up at once.
+        /// </summary>
+        [DataMember(Name = "BountyMaxPerUser", Order = 23)]
+        public int BountyMaxPerUser = 2;
+
+        /// <summary>
+        /// How many days a bounty stays up before its reward goes back to the poster.
+        /// </summary>
+        [DataMember(Name = "BountyExpiryDays", Order = 24)]
+        public int BountyExpiryDays = 7;
+
+        /// <summary>
         /// Loads a <see cref="Config"/> object from the given file path. Will return a default <see cref="Config"/> if the file does not exist.
         /// </summary>
         /// <param name="filePath">Config file path</param>
@@ -226,6 +244,9 @@ namespace PhinixServer
             if (MarketMaxListingsPerUser < 1) MarketMaxListingsPerUser = 3;
             if (MarketPostRateLimitPosts < 1) MarketPostRateLimitPosts = 2;
             if (MarketPostRateLimitSeconds < 1) MarketPostRateLimitSeconds = 60;
+            if (string.IsNullOrEmpty(BountyDatabasePath)) BountyDatabasePath = "bounties";
+            if (BountyMaxPerUser < 1) BountyMaxPerUser = 2;
+            if (BountyExpiryDays < 1) BountyExpiryDays = 7;
             if (ChatRateLimitSeconds < 1) ChatRateLimitSeconds = 10;
         }
 

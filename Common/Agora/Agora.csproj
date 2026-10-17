@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Agora.cs" />
     <Compile Include="ClientAgora.cs" />
+    <Compile Include="Packets\compiled\Bounty.cs" />
+    <Compile Include="Packets\compiled\BountyPackets.cs" />
     <Compile Include="Packets\compiled\Listing.cs" />
     <Compile Include="Packets\compiled\PostListingPacket.cs" />
     <Compile Include="Packets\compiled\PostListingResponsePacket.cs" />
@@ -46,6 +48,9 @@
     <Compile Include="Packets\compiled\SyncListingsPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerAgora.cs" />
+    <Compile Include="ServerAgora.Bounties.cs" />
+    <Compile Include="ClientAgora.Bounties.cs" />
+    <Compile Include="Stores\compiled\BountyStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Packets\Listing.proto" />

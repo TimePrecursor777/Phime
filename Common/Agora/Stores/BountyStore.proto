@@ -1,0 +1,23 @@
+syntax = "proto3";
+package Agora;
+
+import "Packets/Bounty.proto";
+import "Packets/BountyPackets.proto";
+
+// What the server saves to disk for bounties.
+//
+// This has to be saved, unlike chat or the market board, because bounties hold real items in escrow. If the server
+// forgot them on restart, those items would simply vanish.
+
+// A delivery waiting for its recipient to log in
+message PendingBountyDelivery
+{
+  string RecipientUuid = 1;
+  BountyDeliveryPacket Delivery = 2;
+};
+
+message BountyStore
+{
+  repeated Bounty Bounties = 1;
+  repeated PendingBountyDelivery PendingDeliveries = 2;
+};

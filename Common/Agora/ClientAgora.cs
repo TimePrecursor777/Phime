@@ -17,8 +17,11 @@ namespace Agora
     /// </summary>
     /// <remarks>
     /// Modelled on <c>Chat.ClientChat</c>, so compare the two if anything here is unclear.
+    /// <para>
+    /// Like ServerAgora, this is a "partial" class: the bounty half lives in ClientAgora.Bounties.cs.
+    /// </para>
     /// </remarks>
-    public class ClientAgora : Agora
+    public partial class ClientAgora : Agora
     {
         /// <inheritdoc/>
         public override event EventHandler<LogEventArgs> OnLogEntry;
@@ -151,6 +154,9 @@ namespace Agora
             }
 
             OnListingsChanged?.Invoke(this, EventArgs.Empty);
+
+            // Forget the bounty board too (in ClientAgora.Bounties.cs)
+            clearBounties();
         }
 
         /// <summary>
@@ -174,6 +180,25 @@ namespace Agora
                     RaiseLogEntry(new LogEventArgs("Got a PostListingResponsePacket", LogLevel.DEBUG));
                     OnPostListingResponse?.Invoke(this, message.Unpack<PostListingResponsePacket>());
                     break;
+
+                // Bounty packets, handled in ClientAgora.Bounties.cs
+                case "SyncBountiesPacket":
+                    RaiseLogEntry(new LogEventArgs("Got a SyncBountiesPacket", LogLevel.DEBUG));
+                    syncBountiesPacketHandler(message.Unpack<SyncBountiesPacket>());
+                    break;
+                case "PostBountyResponsePacket":
+                    RaiseLogEntry(new LogEventArgs("Got a PostBountyResponsePacket", LogLevel.DEBUG));
+                    OnPostBountyResponse?.Invoke(this, message.Unpack<PostBountyResponsePacket>());
+                    break;
+                case "FulfilBountyResponsePacket":
+                    RaiseLogEntry(new LogEventArgs("Got a FulfilBountyResponsePacket", LogLevel.DEBUG));
+                    OnFulfilBountyResponse?.Invoke(this, message.Unpack<FulfilBountyResponsePacket>());
+                    break;
+                case "BountyDeliveryPacket":
+                    RaiseLogEntry(new LogEventArgs("Got a BountyDeliveryPacket", LogLevel.DEBUG));
+                    OnBountyDelivery?.Invoke(this, message.Unpack<BountyDeliveryPacket>());
+                    break;
+
                 default:
                     RaiseLogEntry(new LogEventArgs("Got an unknown packet type (" + typeUrl.Type + "), discarding...", LogLevel.DEBUG));
                     break;
