@@ -1,4 +1,5 @@
 ﻿using Authentication;
+using Agora;
 using Chat;
 using Connections;
 using RimWorld;
@@ -63,6 +64,15 @@ namespace PhinixClient
         public int UnreadMessagesExcludingBlocked => chat.GetUnreadMessagesExcluding(Settings.BlockedUsers);
         public event EventHandler<UIChatMessageEventArgs> OnChatMessageReceived;
         public event EventHandler OnChatSync;
+
+        // The market board. Like the chat lines above, these are one-line shortcuts ("=>") that pass straight through
+        // to ClientAgora, so the UI only ever has to talk to Client.Instance
+        private ClientAgora agora;
+        public Agora.Listing[] GetListings() => agora.GetListings();
+        public void PostListing(ListingType type, IEnumerable<ProtoThing> items, string note) => agora.PostListing(type, items, note);
+        public void RemoveListing(string listingId) => agora.RemoveListing(listingId);
+        public event EventHandler OnListingsChanged;
+        public event EventHandler<PostListingResponsePacket> OnPostListingResponse;
 
         private ClientTrading trading;
         public void CancelTrade(string tradeId) => trading.CancelTrade(tradeId);
@@ -150,12 +160,14 @@ namespace PhinixClient
             userManager = new ClientUserManager(netClient, authenticator);
             chat = new ClientChat(netClient, authenticator, userManager);
             trading = new ClientTrading(netClient, authenticator, userManager);
+            agora = new ClientAgora(netClient, authenticator, userManager);
 
             // Subscribe to log events
             authenticator.OnLogEntry += ILoggableHandler;
             userManager.OnLogEntry += ILoggableHandler;
             chat.OnLogEntry += ILoggableHandler;
             trading.OnLogEntry += ILoggableHandler;
+            agora.OnLogEntry += ILoggableHandler;
 
             #region Module Event Handlers
             // Subscribe to connection events
@@ -403,6 +415,8 @@ namespace PhinixClient
             userManager.OnUserSync += (sender, e) => { OnUserSync?.Invoke(sender, e); };
             chat.OnChatMessageReceived += (sender, e) => { OnChatMessageReceived?.Invoke(sender, new UIChatMessageEventArgs(new UIChatMessage(userManager, e.Message))); };
             chat.OnChatSync += (sender, e) => { OnChatSync?.Invoke(sender, e); };
+            agora.OnListingsChanged += (sender, e) => { OnListingsChanged?.Invoke(sender, e); };
+            agora.OnPostListingResponse += (sender, e) => { OnPostListingResponse?.Invoke(sender, e); };
             trading.OnTradeCreationSuccess += (sender, e) => { OnTradeCreationSuccess?.Invoke(sender, UICreateTradeEventArgs.FromCreateTradeEventArgs(e, userManager)); };
             trading.OnTradeCreationFailure += (sender, e) => { OnTradeCreationFailure?.Invoke(sender, UICreateTradeEventArgs.FromCreateTradeEventArgs(e, userManager)); };
             trading.OnTradeCompleted += (sender, e) => { OnTradeCompleted?.Invoke(sender, UICompleteTradeEventArgs.FromCompleteTradeEventArgs(e, userManager)); };

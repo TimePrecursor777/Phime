@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Timers;
+using Agora;
 using Authentication;
 using Chat;
 using Connections;
@@ -28,6 +29,7 @@ namespace PhinixServer
         public static ServerUserManager UserManager;
         public static ServerChat Chat;
         public static ServerTrading Trading;
+        public static ServerAgora Agora;
 
         // Exiting flag to stop the main run loop
         private static bool exiting = false;
@@ -52,12 +54,14 @@ namespace PhinixServer
             UserManager = new ServerUserManager(Connections, Authenticator, Config.MaxDisplayNameLength);
             Chat = new ServerChat(Connections, Authenticator, UserManager, Config.ChatHistoryLength, Config.ChatRateLimitMessages, Config.ChatRateLimitSeconds);
             Trading = new ServerTrading(Connections, Authenticator, UserManager);
+            Agora = new ServerAgora(Connections, Authenticator, UserManager);
 
             // Add handler for ILoggable modules
             Authenticator.OnLogEntry += ILoggableHandler;
             UserManager.OnLogEntry += ILoggableHandler;
             Chat.OnLogEntry += ILoggableHandler;
             Trading.OnLogEntry += ILoggableHandler;
+            Agora.OnLogEntry += ILoggableHandler;
 
             // Load saved data
             Authenticator.Load(Config.CredentialDatabasePath);

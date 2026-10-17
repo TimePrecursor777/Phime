@@ -155,6 +155,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Agora\Agora.csproj">
+      <Project>{A792C551-20D4-414D-A4D4-97632E697DD3}</Project>
+      <Name>Agora</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Authentication\Authentication.csproj">
       <Project>{E983D5C7-A573-44E4-A8BB-D5A9D78EA538}</Project>
       <Name>Authentication</Name>
@@ -201,6 +205,7 @@
     <Copy SourceFiles="$(TargetDir)\UserManagement.dll" DestinationFiles="$(SolutionDir)\Client\Common\Assemblies\6-UserManagement.dll" />
     <Copy SourceFiles="$(TargetDir)\Chat.dll" DestinationFiles="$(SolutionDir)\Client\Common\Assemblies\7-Chat.dll" />
     <Copy SourceFiles="$(TargetDir)\Trading.dll" DestinationFiles="$(SolutionDir)\Client\Common\Assemblies\8-Trading.dll" />
+    <Copy SourceFiles="$(TargetDir)\Agora.dll" DestinationFiles="$(SolutionDir)\Client\Common\Assemblies\9-Agora.dll" />
     <Copy SourceFiles="$(TargetDir)\PhinixClient.dll" DestinationFiles="$(SolutionDir)\Client\$(GameVersion)\Assemblies\9-PhinixClient.dll" />
   </Target>
 </Project>

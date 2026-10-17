@@ -24,6 +24,7 @@ namespace PhinixServer
             Console.WriteLine("UserManagement: " + UserManager.Version);
             Console.WriteLine("Chat: " + Chat.Chat.Version);
             Console.WriteLine("Trading: " + Trading.Trading.Version);
+            Console.WriteLine("Agora: " + Agora.Agora.Version);
 
             return true;
         }
