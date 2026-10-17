@@ -26,8 +26,18 @@ namespace PhinixClient
                 ProtoHediff protoHediff = new ProtoHediff
                 {
                     DefName = hediff.def.defName,
-                    Severity = hediff.Severity
+                    Severity = hediff.Severity,
+                    // Without this, scars come back as fresh wounds that bleed
+                    Permanent = hediff.IsPermanent()
                 };
+
+                // Remember bandages so tended wounds don't start bleeding again
+                HediffComp_TendDuration tendComp = hediff.TryGetComp<HediffComp_TendDuration>();
+                if (tendComp != null && tendComp.IsTended)
+                {
+                    protoHediff.TendQuality = tendComp.tendQuality;
+                    protoHediff.TendTicksLeft = tendComp.tendTicksLeft;
+                }
 
                 if (hediff.Part != null)
                 {
@@ -75,7 +85,26 @@ namespace PhinixClient
                 {
                     Hediff hediff = HediffMaker.MakeHediff(hediffDef, pawn, part);
                     hediff.Severity = protoHediff.Severity;
+
+                    // Mark scars as scars before adding, so they aren't merged into a fresh wound on the same part
+                    if (protoHediff.Permanent)
+                    {
+                        HediffComp_GetsPermanent permanentComp = hediff.TryGetComp<HediffComp_GetsPermanent>();
+                        if (permanentComp != null) permanentComp.IsPermanent = true;
+                    }
+
                     pawn.health.AddHediff(hediff, part);
+
+                    // Put the bandage back on
+                    if (protoHediff.TendTicksLeft > 0)
+                    {
+                        HediffComp_TendDuration tendComp = hediff.TryGetComp<HediffComp_TendDuration>();
+                        if (tendComp != null)
+                        {
+                            tendComp.tendQuality = protoHediff.TendQuality;
+                            tendComp.tendTicksLeft = protoHediff.TendTicksLeft;
+                        }
+                    }
                 }
                 catch (Exception e)
                 {

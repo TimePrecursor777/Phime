@@ -32,4 +32,7 @@ message ProtoHediff
     string BodyPartDefName = 2;             // BodyPartDef name, empty for whole-body conditions
     int32 BodyPartIndex = 3;                // Which part when there are several of the same def (e.g. left vs right leg)
     float Severity = 4;
+    bool Permanent = 5;                     // Old scars and wounds that never heal, rather than fresh ones that bleed
+    float TendQuality = 6;                  // How well it was bandaged, 0 if never tended
+    int32 TendTicksLeft = 7;                // How long the bandage lasts, 0 or less if it has run out
 };

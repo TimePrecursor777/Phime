@@ -32,14 +32,15 @@ namespace Trading {
             "b0FuaW1hbC5UcmFpbmluZ1N0ZXBzRW50cnkSJQoHSGVkaWZmcxgIIAMoCzIU",
             "LlRyYWRpbmcuUHJvdG9IZWRpZmYSFgoOQm9uZGVkUGF3bk5hbWUYCSABKAka",
             "NAoSVHJhaW5pbmdTdGVwc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgC",
-            "IAEoBToCOAEiYAoLUHJvdG9IZWRpZmYSDwoHRGVmTmFtZRgBIAEoCRIXCg9C",
-            "b2R5UGFydERlZk5hbWUYAiABKAkSFQoNQm9keVBhcnRJbmRleBgDIAEoBRIQ",
-            "CghTZXZlcml0eRgEIAEoAmIGcHJvdG8z"));
+            "IAEoBToCOAEinwEKC1Byb3RvSGVkaWZmEg8KB0RlZk5hbWUYASABKAkSFwoP",
+            "Qm9keVBhcnREZWZOYW1lGAIgASgJEhUKDUJvZHlQYXJ0SW5kZXgYAyABKAUS",
+            "EAoIU2V2ZXJpdHkYBCABKAISEQoJUGVybWFuZW50GAUgASgIEhMKC1RlbmRR",
+            "dWFsaXR5GAYgASgCEhUKDVRlbmRUaWNrc0xlZnQYByABKAViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoAnimal), global::Trading.ProtoAnimal.Parser, new[]{ "DefName", "KindDefName", "CustomName", "BiologicalAgeTicks", "ChronologicalAgeTicks", "IsFemale", "TrainingSteps", "Hediffs", "BondedPawnName" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoHediff), global::Trading.ProtoHediff.Parser, new[]{ "DefName", "BodyPartDefName", "BodyPartIndex", "Severity" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Trading.ProtoHediff), global::Trading.ProtoHediff.Parser, new[]{ "DefName", "BodyPartDefName", "BodyPartIndex", "Severity", "Permanent", "TendQuality", "TendTicksLeft" }, null, null, null, null)
           }));
     }
     #endregion
@@ -440,6 +441,9 @@ namespace Trading {
       bodyPartDefName_ = other.bodyPartDefName_;
       bodyPartIndex_ = other.bodyPartIndex_;
       severity_ = other.severity_;
+      permanent_ = other.permanent_;
+      tendQuality_ = other.tendQuality_;
+      tendTicksLeft_ = other.tendTicksLeft_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -501,6 +505,48 @@ namespace Trading {
       }
     }
 
+    /// <summary>Field number for the "Permanent" field.</summary>
+    public const int PermanentFieldNumber = 5;
+    private bool permanent_;
+    /// <summary>
+    /// Old scars and wounds that never heal, rather than fresh ones that bleed
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Permanent {
+      get { return permanent_; }
+      set {
+        permanent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "TendQuality" field.</summary>
+    public const int TendQualityFieldNumber = 6;
+    private float tendQuality_;
+    /// <summary>
+    /// How well it was bandaged, 0 if never tended
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float TendQuality {
+      get { return tendQuality_; }
+      set {
+        tendQuality_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "TendTicksLeft" field.</summary>
+    public const int TendTicksLeftFieldNumber = 7;
+    private int tendTicksLeft_;
+    /// <summary>
+    /// How long the bandage lasts, 0 or less if it has run out
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int TendTicksLeft {
+      get { return tendTicksLeft_; }
+      set {
+        tendTicksLeft_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as ProtoHediff);
@@ -518,6 +564,9 @@ namespace Trading {
       if (BodyPartDefName != other.BodyPartDefName) return false;
       if (BodyPartIndex != other.BodyPartIndex) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Severity, other.Severity)) return false;
+      if (Permanent != other.Permanent) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(TendQuality, other.TendQuality)) return false;
+      if (TendTicksLeft != other.TendTicksLeft) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -528,6 +577,9 @@ namespace Trading {
       if (BodyPartDefName.Length != 0) hash ^= BodyPartDefName.GetHashCode();
       if (BodyPartIndex != 0) hash ^= BodyPartIndex.GetHashCode();
       if (Severity != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Severity);
+      if (Permanent != false) hash ^= Permanent.GetHashCode();
+      if (TendQuality != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(TendQuality);
+      if (TendTicksLeft != 0) hash ^= TendTicksLeft.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -557,6 +609,18 @@ namespace Trading {
         output.WriteRawTag(37);
         output.WriteFloat(Severity);
       }
+      if (Permanent != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(Permanent);
+      }
+      if (TendQuality != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(TendQuality);
+      }
+      if (TendTicksLeft != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(TendTicksLeft);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -576,6 +640,15 @@ namespace Trading {
       }
       if (Severity != 0F) {
         size += 1 + 4;
+      }
+      if (Permanent != false) {
+        size += 1 + 1;
+      }
+      if (TendQuality != 0F) {
+        size += 1 + 4;
+      }
+      if (TendTicksLeft != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(TendTicksLeft);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -599,6 +672,15 @@ namespace Trading {
       }
       if (other.Severity != 0F) {
         Severity = other.Severity;
+      }
+      if (other.Permanent != false) {
+        Permanent = other.Permanent;
+      }
+      if (other.TendQuality != 0F) {
+        TendQuality = other.TendQuality;
+      }
+      if (other.TendTicksLeft != 0) {
+        TendTicksLeft = other.TendTicksLeft;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -625,6 +707,18 @@ namespace Trading {
           }
           case 37: {
             Severity = input.ReadFloat();
+            break;
+          }
+          case 40: {
+            Permanent = input.ReadBool();
+            break;
+          }
+          case 53: {
+            TendQuality = input.ReadFloat();
+            break;
+          }
+          case 56: {
+            TendTicksLeft = input.ReadInt32();
             break;
           }
         }
